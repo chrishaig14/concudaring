@@ -28,8 +28,7 @@ EventHandler *SignalHandler::registrarHandler(int signum, EventHandler *eh) {
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = SignalHandler::dispatcher;
-    sigemptyset(
-            &sa.sa_mask);    // inicializa la mascara de seniales a bloquear durante la ejecucion del handler como vacio
+    sigemptyset(&sa.sa_mask);    // inicializa la mascara de seniales a bloquear durante la ejecucion del handler como vacio
     sigaddset(&sa.sa_mask, signum);
     sigaction(signum, &sa, 0);    // cambiar accion de la senial
 

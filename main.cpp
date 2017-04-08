@@ -1,12 +1,36 @@
 #include <iostream>
-#include <unistd.h>
-#include "shmem/MemoriaCompartida2.h"
-#include <sys/wait.h>
+#include "logger/Log.h"
+#include "constantes.h"
+#include "Juego.h"
 #include <vector>
 #include <algorithm>
-#include <sys/sem.h>
 
-int main() {
+bool validarParametros(int argc, char **argv) {
+
+    bool validos = true;
+
+    if(argc > 3) {
+        Log::instance()->Log::append(TOO_MANY_ARGS, Log::ERROR);
+        validos = false;
+    }
+
+    if((char) argv[2] == 'd'){
+        Log::instance()->loggerLevel = Log::INFO;
+        Log::instance()->append(INFO_MODE, Log::INFO);
+    }
+
+    if(atoi(argv[1]) == 0 || atoi(argv[2])%2 != 0) {
+        Log::instance()->append(INVALID_PLAYER_AMOUNT, Log::ERROR);
+        validos = false;
+    }
+    return validos;
+}
+
+void ayuda() {
+    std::cout << HELP << std::endl;
+}
+
+int main(int argc, char** argv) {
 
 //      Proceso principal -> árbitro
 //      Un proceso por cada jugador.
@@ -32,104 +56,25 @@ int main() {
 //    *** Hay que tener algo para saber quién fue el último jugador de cada mano. ***
 
 
-
-
-    MemoriaCompartida2<int> cardStack; // Pila central de cartas
-    cardStack.crear("/bin/bash", 'A');
-
-    pid_t pid_referee = getpid();
-    std::vector<pid_t> pid_players(numPlayers);
-
-    std::vector<MemoriaCompartida2<int>> players_cards(numPlayers);
-
-
-    for (int i = 0; i < numPlayers; i++) {
-        pid_t pid = fork();
-        pid_players[i] = pid;
-        if (pid == 0) {
-
-            // Código de los jugadores
-
-            MemoriaCompartida2<int> cards("/bin/bash", 'a' + i); // Pila del jugador
-
-            // El árbitro me manda la señal para que ponga mi carta
-
-            cards.sacar_carta();
-
-            cardStack.escribir(cards.leer()); // Poner mi primera carta en la pila
-
-            kill(pid_referee, SIGINT); // Aviso que y apuse la carta
-
-            // El árbitro avisa que ya está la carta en la pila.
-
-
-            if (previous == current || current == 7) {
-                std::cout << "Pongo mano sobre la pila" << std::endl;
-                if (soy el último) {
-                    agarrar cartas
-                }
-            } else if (current == 10) {
-                std::cout << "Buenos días señorita" << std::endl;
-            } else if (current == 11) {
-                std::cout << "Buenos noches caballero" << std::endl;
-            } else if (current == 12) {
-                std::cout << "Saludo militar" << std::endl;
-            }
-
-            if (soy el último){
-                // Enviar señal al árbitro de que ya terminó la mano.
-                kill(pid_referee, SIGINT);
-            }
-        }
+    Log::instance()->loggerLevel = Log::ERROR;
+    if(!validarParametros(argc, argv)) {
+        ayuda();
+        return 0;
     }
 
-    // Repartir cartas
+    int numJugadores = atoi(argv[1]);
+    Log::instance()->append(
+            std::string(STARTING_WITH) + std::to_string(numJugadores),
+            getpid(),
+            Log::INFO);
 
-    srand(time(NULL));
-    std::vector<int> deck(48, 0);
-    for (int i = 0; i < 48; ++i) {
-        deck[i] = i % 12 + 1;
+    Juego* juego = new Juego(numJugadores);
+    int resultado = juego->correr();
+
+    if(resultado == 0){
+        Log::instance()->append(GAME_EXIT_OK, getpid(), Log::INFO);
+    } else {
+        Log::instance()->append(GAME_EXIT_ERROR, getpid(), Log::ERROR);
     }
-    std::random_shuffle(deck.begin(), deck.end());
-
-    for (int i = 0; i < numPlayers; i++) {
-        players_cards[i] = MemoriaCompartida2<int>("/bin/bash", 'a' + i); // Pila de cada jugador
-    }
-
-    for (int i = 0; i < 48; ++i) {
-        players_cards[i % (48 / numPlayers)].escribir(deck[i]);
-    }
-
-
-    int player_turn = 0;
-
-    int winner() {
-        for (int i = 0; i < numPlayers; i++) {
-            if(players_cards[i].size() == 0){
-                return i; // i del jugador que ganó
-            }
-        }
-        return -1;
-    }
-
-    do {
-
-        // Aviso al jugador que ponga su carta
-        kill(pid_players[player_turn], SIGINT);
-
-        // El jugador me avisa con una señal que ya puso la carta
-
-        for (int i = 0; i < numPlayers; i++) {
-            // Aviso a los jugadores que ya está la carta en la pila central
-            kill(pid_players[i], SIGINT); // Otra señal que no sa la misma que antes.
-        }
-
-        // El último jugador me avisa que ya jugaron todos.
-
-        player_turn = (player_turn + 1) % numPlayers;
-    } while (winner() == -1);
-
-    std::cout << "ganó el jugador " << winner() << std::endl;
-
-
+    return resultado;
 }
