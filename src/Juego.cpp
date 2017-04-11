@@ -1,13 +1,11 @@
 #include <iostream>
 #include <unistd.h>
 #include "shmem/MemoriaCompartida.h"
-#include "logger/Log.h"
 #include "constantes.h"
 #include "Juego.h"
 #include <sys/wait.h>
 #include <vector>
 #include <algorithm>
-#include <sys/sem.h>
 
 Juego::Juego(int cantJugadores) {
     this->cantJugadores = cantJugadores;

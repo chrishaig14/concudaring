@@ -8,6 +8,7 @@
 #include <string.h>
 #include <iostream>
 #include <errno.h>
+#include "../logger/Log.h"
 
 template<class T>
 class MemoriaCompartida {
