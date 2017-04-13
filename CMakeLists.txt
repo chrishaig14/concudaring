@@ -14,6 +14,6 @@ set(SOURCE_FILES
         src/constantes.h
         src/Juego.cpp
         src/Juego.h
-        src/main.cpp src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h)
+        src/main.cpp src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/tira_cartas.cpp src/juega.cpp)
 
 add_executable(concudaring ${SOURCE_FILES})
