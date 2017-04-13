@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.5)
 project(concudaring)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -7,6 +7,7 @@ set(SOURCE_FILES
         src/logger/Log.cpp
         src/logger/Log.h
         src/shmem/MemoriaCompartida.h
+        src/shmem/MemoriaCompartidaArray.h
         src/signals/EventHandler.h
         src/signals/SIGINT_Handler.h
         src/signals/SignalHandler.cpp
@@ -14,6 +15,9 @@ set(SOURCE_FILES
         src/constantes.h
         src/Juego.cpp
         src/Juego.h
-        src/main.cpp src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/tira_cartas.cpp src/juega.cpp)
+        src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/juega.cpp src/SharedStack.cpp src/SharedStack.h)
 
-add_executable(concudaring ${SOURCE_FILES})
+add_executable(tira_cartas ${SOURCE_FILES} src/tira_cartas.cpp)
+
+add_executable(concudaring ${SOURCE_FILES} src/main.cpp)
+

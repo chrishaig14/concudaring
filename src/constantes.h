@@ -15,3 +15,11 @@
 
 /* File path for shmem */
 #define SHMEM_PATH "/bin/bash"
+
+#define SEM_JUGAR 100
+#define SEM_TURNO 101
+
+#define SHM_PLAYER_NUM 102
+
+#define SHM_CARDS 103
+#define NUM_CARDS 48

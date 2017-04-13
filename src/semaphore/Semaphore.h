@@ -14,15 +14,13 @@ class Semaphore {
 
 private :
 
-    int id;
+    int semid;
 
     int valorInicial;
 
-    int inicializar() const;
-
 public :
 
-    Semaphore(const std::string &nombre, const int valorInicial);
+    Semaphore(const std::string &nombre, char char_id, const int valorInicial);
 
     ~ Semaphore();
 
@@ -32,6 +30,9 @@ public :
 
     void eliminar() const;
 
+    int inicializar() const;
+
+    int id();
 };
 
 #endif //CONCUDARING_SEMAPHORE_H
