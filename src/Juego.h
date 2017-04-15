@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "shmem/MemoriaCompartidaArray.h"
-#include "SharedStack.h"
+#include "shared_stack/SharedStack.h"
 
 class Juego {
 public:

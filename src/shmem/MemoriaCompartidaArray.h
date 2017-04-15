@@ -54,8 +54,7 @@ void MemoriaCompartidaArray<T>::crear(const std::string &archivo, const char let
     key_t clave = ftok(archivo.c_str(), letra);
 
     if (clave > 0) {
-        this->
-                shmId = shmget(clave, sizeof(T) * size, 0644 | IPC_CREAT);
+        this->shmId = shmget(clave, sizeof(T) * size, 0644 | IPC_CREAT);
 
         if (this->shmId > 0) {
             void *tmpPtr = shmat(this->shmId, NULL, 0);

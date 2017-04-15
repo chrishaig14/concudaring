@@ -1,12 +1,8 @@
-//
-// Created by chris on 13/04/17.
-//
-
 #ifndef CONCUDARING_SHAREDSTACK_H
 #define CONCUDARING_SHAREDSTACK_H
 
 #include <string>
-#include "shmem/MemoriaCompartidaArray.h"
+#include "../shmem/MemoriaCompartidaArray.h"
 
 class SharedStack {
     MemoriaCompartidaArray<int> shmem;

@@ -1,7 +1,3 @@
-//
-// Created by chris on 13/04/17.
-//
-
 #include "SharedStack.h"
 
 void SharedStack::push(int num) {

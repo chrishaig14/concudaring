@@ -15,9 +15,11 @@ set(SOURCE_FILES
         src/constantes.h
         src/Juego.cpp
         src/Juego.h
-        src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/juega.cpp src/SharedStack.cpp src/SharedStack.h)
+        src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/juega.cpp src/shared_stack/SharedStack.cpp src/shared_stack/SharedStack.h)
 
 add_executable(tira_cartas ${SOURCE_FILES} src/tira_cartas.cpp)
 
 add_executable(concudaring ${SOURCE_FILES} src/main.cpp)
+
+add_executable(referi ${SOURCE_FILES} src/referi.cpp)
 

@@ -5,6 +5,7 @@
 #include "Juego.h"
 #include "semaphore/Semaphore.h"
 #include <algorithm>
+#include <sys/wait.h>
 
 Juego::Juego(int cantJugadores) {
     this->cantJugadores = cantJugadores;
@@ -14,12 +15,16 @@ Juego::~Juego() {
 
 }
 
+pid_t crearReferi(char* cant_str) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        execl("referi", cant_str, "\0"); // creo al referi que corre en su propio proceso
+    }
+    return pid;
+}
+
 int Juego::correr() {
-    int num_players = cantJugadores;
-
     SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
-
-    pid_t pidReferi = getpid();
 
     std::vector<pid_t> pid_players(cantJugadores);
 
@@ -27,14 +32,16 @@ int Juego::correr() {
 
     std::vector<Semaphore> sem_player;
 
-    for (int i = 0; i < num_players; i++) {
+    MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
+
+    hayGanador.escribir(false);
+
+    for (int i = 0; i < cantJugadores; i++) {
         // semáforos para el turno de cada jugador
-        // inicializar tdos en 0, para que se queden esperando
+        // inicializar todos en 0, para que se queden esperando
         sem_player.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
         sem_player[i].inicializar();
     }
-
-    //sleep(60);
 
     Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 1); // semáforo para que empiecen a hacer las acciones del juego
     sem_jugar.inicializar();
@@ -62,7 +69,7 @@ int Juego::correr() {
 
     repartir_cartas(cartasJugadores);
 
-    std::cout << "# Cartas repartidas, empieza el juego" << std::endl;
+    std::cout << "# Se repartieron " << NUM_CARDS << ", empieza el juego" << std::endl;
 
     sem_player[0].v(); // ahora puede jugar el jugador 1
 
@@ -75,14 +82,27 @@ int Juego::correr() {
 
 //    std::cout << PLAYER_WON << winner() << std::endl;
 
+    //pid_t ref_pid = crearReferi(cant_str);
+
+    while(!hayGanador.leer()) { // Podria usar otro semaforo para bloquear este proceso hasta que gane un jugador
+        sleep(1);
+    }
+
+    for (int i = 0; i < cantJugadores; i++) {
+        kill(pid_players[i], SIGQUIT);
+        int child_return;
+        int id = wait(&child_return);
+        std::cout << "El proceso hijo " << id << " ha terminado." << std::endl;
+    }
+
     return 0;
 }
 
 void Juego::repartir_cartas(std::vector<SharedStack> &cartasJugadores) {
     srand(time(NULL));
-    std::vector<int> deck(48, 0);
-    for (int i = 0; i < 48; ++i) {
-        deck[i] = i % 12 + 1;
+    std::vector<int> deck(NUM_CARDS, 0);
+    for (int i = 0; i < NUM_CARDS; ++i) {
+        deck[i] = i % NUM_CARDS/4 + 1;
     }
     random_shuffle(deck.begin(), deck.end());
 
@@ -91,7 +111,8 @@ void Juego::repartir_cartas(std::vector<SharedStack> &cartasJugadores) {
     }
 
     // reparto cartas
-    for (int i = 0; i < 48; ++i) {
+    for (int i = 0; i < NUM_CARDS; ++i) {
         cartasJugadores[i % this->cantJugadores].push(deck[i]);
     }
 }
+

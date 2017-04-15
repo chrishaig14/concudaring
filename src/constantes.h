@@ -22,4 +22,6 @@
 #define SHM_PLAYER_NUM 102
 
 #define SHM_CARDS 103
-#define NUM_CARDS 48
+#define NUM_CARDS 24
+
+#define SHM_WINNER SHM_CARDS - 1
