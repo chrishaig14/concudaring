@@ -73,8 +73,6 @@ int Juego::correr() {
 
     sem_player[0].v(); // ahora puede jugar el jugador 1
 
-    std::cout << "[*] " << sem_player[0].id() << " -> 1" << std::endl;
-
 //    Log::instance()->append(
 //            std::string(PLAYER_WON) + std::to_string(winner()),
 //            pidReferi,

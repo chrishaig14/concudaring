@@ -29,16 +29,13 @@ int main(int argc, char *argv[]) {
 
     while (true) {
         sem_jugar.p(); // hago lo mio segun la carta
-        //std::cout << "espero sem con id " << sem_jugar.id() << std::endl;
         std::cout << std::endl;
         numero_jugador.escribir(numero_jugador.leer() + 1); // para controlar quien es el ultimo jugador
         // de cada ronda
         bool ultimo = numero_jugador.leer() == num_players;
         std::cout << "[" << player_num << "]" << " Numero:" << numero_jugador.leer() << std::endl;
         sleep(2);
-        //std::cout << "[" << player_num << "]"<< "central size: " << centralCards.size() << std::endl;
         int topCard = centralCards.top();
-        //std::cout << "[" << player_num << "]"<< "central size: " << centralCards.size() << std::endl;
         std::cout << "[" << player_num << "]" << " Top: " << topCard << std::endl;
         std::cout << "[" << player_num << "]" << " Previous: " << previous_card << std::endl;
 
@@ -73,7 +70,6 @@ int main(int argc, char *argv[]) {
         } else {
             // ya termine la accion que tocaba segun la carta, le toca al que sigue
             std::cout << "[" << player_num << "]" << " El que sigue" << std::endl;
-
             sem_jugar.v();
         }
 
