@@ -8,6 +8,7 @@
 #include <string.h>
 #include <iostream>
 #include <errno.h>
+#include <unistd.h>
 
 template<class T>
 class MemoriaCompartidaArray {
@@ -115,9 +116,8 @@ MemoriaCompartidaArray<T>::MemoriaCompartidaArray(const std::string &archivo, co
                                                                                                                      NULL) {
     key_t clave = ftok(archivo.c_str(), letra);
     this->size = size;
-    if (clave > 0) {
+    if (clave != -1) {
         this->shmId = shmget(clave, sizeof(T) * size, 0644 | IPC_CREAT);
-
         if (this->shmId > 0) {
             void *tmpPtr = shmat(this->shmId, NULL, 0);
             if (tmpPtr != (void *) -1) {
@@ -190,6 +190,7 @@ void MemoriaCompartidaArray<T>::escribir(const T &dato) {
 
 template<class T>
 T &MemoriaCompartidaArray<T>::operator[](size_t i) {
+
     if (i >= size) {
         // ERROR, index out of range
     }

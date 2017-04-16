@@ -48,8 +48,11 @@ void MemoriaCompartida<T>::crear(const std::string &archivo, const char letra) {
     key_t clave = ftok(archivo.c_str(), letra);
 
     if (clave > 0) {
+        std::cout << "*** El proceso " << getpid() << " pide " << sizeof(T) << " con \"" << archivo << "\" y \'"
+                  << letra << "\'" << std::endl;
         this->shmId = shmget(clave, sizeof(T), 0644 | IPC_CREAT);
-
+        std::cout << "### El proceso " << getpid() << " pide " << sizeof(T) << " con \"" << archivo << "\" y \'"
+                  << letra << "\'" << std::endl;
         if (this->shmId > 0) {
             void *tmpPtr = shmat(this->shmId, NULL, 0);
             if (tmpPtr != (void *) -1) {
@@ -91,9 +94,8 @@ template<class T>
 MemoriaCompartida<T>::MemoriaCompartida(const std::string &archivo, const char letra):shmId(0), ptrDatos(NULL) {
     key_t clave = ftok(archivo.c_str(), letra);
 
-    if (clave > 0) {
+    if (clave != -1) {
         this->shmId = shmget(clave, sizeof(T), 0644 | IPC_CREAT);
-
         if (this->shmId > 0) {
             void *tmpPtr = shmat(this->shmId, NULL, 0);
             if (tmpPtr != (void *) -1) {

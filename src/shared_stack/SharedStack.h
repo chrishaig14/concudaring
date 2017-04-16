@@ -6,10 +6,9 @@
 
 class SharedStack {
     MemoriaCompartidaArray<int> shmem;
-    size_t _size;
 
 public:
-    SharedStack(const std::string &file, char char_id, size_t total_size, size_t current_size = 0);
+    SharedStack(const std::string &file, char char_id, size_t total_size);
 
     void push(int num);
 

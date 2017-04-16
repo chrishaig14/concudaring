@@ -19,9 +19,9 @@
 #define SEM_JUGAR 100
 #define SEM_TURNO 101
 
-#define SHM_PLAYER_NUM 102
+#define SHM_PLAYER_NUM 220
 
 #define SHM_CARDS 103
-#define NUM_CARDS 24
+#define NUM_CARDS 48
 
 #define SHM_WINNER SHM_CARDS - 1

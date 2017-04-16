@@ -8,11 +8,15 @@
 
 int main(int argc, char *argv[]) {
 
+    if (fork() == 0) {
+        execv("juega", argv);
+    }
+
     int num_players = atoi(argv[0]); // cantidad total de jugadores
 
     int player_num = atoi(argv[1]); // mi número de jugador
 
-    std::cout << "Player PID: " << getpid() << " jugador: " << player_num << " de " << num_players << " jugadores." << std::endl;
+    //std::cout << "Player PID: " << getpid() << " jugador: " << player_num << " de " << num_players << " jugadores." << std::endl;
 
     std::vector<Semaphore> sem_player;
 
@@ -30,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     SharedStack centralCards(SHMEM_PATH, SHM_CARDS, NUM_CARDS);
 
-    SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + player_num, NUM_CARDS, NUM_CARDS / num_players);
+    SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + player_num, NUM_CARDS);
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
 
@@ -40,22 +44,29 @@ int main(int argc, char *argv[]) {
         // si me quede sin cartas, gané
         // un semaforo para cada jugador, que queda libre cuando el jugador anterior termina su turno
 
-        std::cout << "[" << player_num << "]" << " semid = " << sem_player[player_num].id() << " -> wait" << std::endl;
+//        std::cout << "[" << player_num << "]" << " semid = " << sem_player[player_num].id() << " -> wait" << std::endl;
         sem_player[player_num].p(); // espero a que sea mi turno
 
-        std::cout << "[" << player_num << "]" << " semid = " << sem_player[player_num].id() << " -> 0" << std::endl;
+//        std::cout << "[" << player_num << "]" << " semid = " << sem_player[player_num].id() << " -> 0" << std::endl;
+        std::cout << "****************************************" << std::endl;
         std::cout << "[" << player_num << "]" << " Empieza mi turno " << std::endl;
         int myTopCard = myCards.pop();
-
         centralCards.push(myTopCard); // pongo la carta
-        std::cout << "[" << player_num << "]" << " Pongo carta " << myTopCard << std::endl;
-        sem_jugar.v(); // los jugadores ahora empiezan a hacer las acciones del juego
-        std::cout << "[" << player_num << "]" << " Cada jugador realiza sus acciones." << std::endl;
 
-        std::cout << "[" << player_num << "]" << " Duermo por 1 segundo." << std::endl;
-        sleep(1);
-        std::cout << "[" << player_num << "]" << " Listo." << std::endl;
-        //sem_turno_terminado.p(); // espero a que cada uno haga lo suyo
+        std::cout << "[" << player_num << "]" << " Pongo carta " << myTopCard << std::endl;
+        std::cout << "[" << player_num << "]" << " Top: " << centralCards.top() << std::endl;
+
+        MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
+
+        numero_jugador.escribir(0);
+
+        sem_jugar.v(); // los jugadores ahora empiezan a hacer las acciones del juego
+
+        sleep(5);
+
+        sem_turno_terminado.p(); // espero a que cada uno haga lo suyo
+
+        sleep(5);
 
         std::cout << "[" << player_num << "]" << " Termina mi turno." << std::endl;
 
@@ -67,8 +78,11 @@ int main(int argc, char *argv[]) {
             break;
         }
 
+        std::cout << "****************************************" << std::endl;
+
         sem_player[NEXT_PLAYER(player_num)].v();// habilito al proximo jugador para que tire su carta
-        std::cout << "[" << player_num << "]"  << " semid = " << sem_player[NEXT_PLAYER(player_num)].id() << " -> 1"
-                  << std::endl;
+        //std::cout << "[" << player_num << "]"  << " semid = " << sem_player[NEXT_PLAYER(player_num)].id() << " -> 1"
+        //<< std::endl;
+
     }
 }

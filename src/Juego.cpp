@@ -18,13 +18,13 @@ Juego::~Juego() {
 pid_t crearReferi(char* cant_str) {
     pid_t pid = fork();
     if (pid == 0) {
-        execl("referi", cant_str, "\0"); // creo al referi que corre en su propio proceso
+        execl("referi", cant_str, NULL); // creo al referi que corre en su propio proceso
     }
     return pid;
 }
 
 int Juego::correr() {
-    SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
+    //SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
 
     std::vector<pid_t> pid_players(cantJugadores);
 
@@ -43,7 +43,7 @@ int Juego::correr() {
         sem_player[i].inicializar();
     }
 
-    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 1); // semáforo para que empiecen a hacer las acciones del juego
+    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0); // semáforo para que empiecen a hacer las acciones del juego
     sem_jugar.inicializar();
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0); // semáforo para esperar a que jueguen todos
     sem_turno_terminado.inicializar();
@@ -58,7 +58,7 @@ int Juego::correr() {
             char num_str[32];
             sprintf(num_str, "%d", i);
             //std::cout << i << " - " << getpid() << std::endl;
-            execl("tira_cartas", cant_str, num_str, "\0");
+            execl("tira_cartas", cant_str, num_str, NULL);
             // tira_cartas.cpp
         }
     }
@@ -115,4 +115,3 @@ void Juego::repartir_cartas(std::vector<SharedStack> &cartasJugadores) {
         cartasJugadores[i % this->cantJugadores].push(deck[i]);
     }
 }
-

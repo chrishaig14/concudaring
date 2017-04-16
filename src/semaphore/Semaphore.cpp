@@ -42,7 +42,7 @@ int Semaphore::v() const {
     struct sembuf operacion;
     operacion.sem_num = 0; // numero de Semaphore
     operacion.sem_op = 1; // sumar 1 al Semaphore
-    operacion.sem_flg = SEM_UNDO;
+    //operacion.sem_flg = SEM_UNDO;
     int resultado = semop(this->semid, &operacion, 1);
     return resultado;
 }
