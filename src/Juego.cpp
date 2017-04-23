@@ -24,8 +24,6 @@ pid_t crearReferi(char* cant_str) {
 }
 
 int Juego::correr() {
-    //SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
-
     std::vector<pid_t> pid_players(cantJugadores);
 
     std::vector<SharedStack> cartasJugadores;

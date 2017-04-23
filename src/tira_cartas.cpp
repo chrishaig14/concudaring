@@ -45,30 +45,13 @@ int main(int argc, char *argv[]) {
 
         sem_turno_terminado.inicializar(); //  0
 
-        //std::cout << "TURNO TERMINADO INICIALIZADO" << std::endl;
-
         for (int i = 0; i < num_players; i++) {
 
             Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 1);
             sem_jugar.v(1);
-            //std::cout << "inicializado " << sem_jugar.id() << std::endl;
-
-            //sleep(20);
         }
 
-        //std::cout << "sem turno terminado id: " << sem_turno_terminado.id() << std::endl;
-        //sleep(20);
-
-
         sem_turno_terminado.p(num_players);
-
-        //std::cout << "termine de esperar" << std::endl;
-
-        //sleep(20);
-
-        //std::cout << "Cada uno hizo lo suyo!" << std::endl;
-
-        //sleep(10);
 
         if (numero_jugador.leer() == 0) {
             // Ninguno se lleva las cartas
@@ -105,6 +88,5 @@ int main(int argc, char *argv[]) {
         std::cout << "****************************************" << std::endl;
 
         sem_player[NEXT_PLAYER(player_num)].v(1);// habilito al proximo jugador para que tire su carta
-        //sem_turno_terminado.v(num_players);
     }
 }

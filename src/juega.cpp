@@ -19,16 +19,7 @@ int main(int argc, char *argv[]) {
     int previous_card = -1;
 
     while (true) {
-        //std::cout << "[" << player_num << "]" << " Esperando que alguien ponga una carta! "<< std::endl;
-        //sleep(60);
         sem_jugar.p(1); // hago lo mio segun la carta
-        /* for(int i = 0; i < 10; i++){
-             int j = i+1;
-             std::cout << "sadf" << std::endl;
-         }*/
-//        std::cout << "[" << player_num << "]" << "sadfasdf" << std::endl;
-//        exit(0);
-        //std::cout << "[" << player_num << "]" << " Ahora puedo jugar" << std::endl;
         int topCard = centralCards.top();
         if (topCard == previous_card || topCard == 7) {
             std::cout << "[" << player_num << "]" << " Pongo mano sobre la pila de cartas" << std::endl;
@@ -45,8 +36,6 @@ int main(int argc, char *argv[]) {
             }
         }
         previous_card = topCard;
-        //std::cout << "turno terminado" << sem_turno_terminado.id() << std::endl;
-        //sleep(15);
         sem_turno_terminado.v(1);
     }
 }
