@@ -41,6 +41,8 @@ int Juego::correr() {
         // inicializar todos en 0, para que se queden esperando
         sem_player.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
         sem_player[i].inicializar();
+        Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 0);
+        sem_jugar.inicializar();
     }
 
     char cant_str[32];
