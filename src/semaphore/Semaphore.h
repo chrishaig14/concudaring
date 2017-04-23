@@ -24,9 +24,9 @@ public :
 
     ~ Semaphore();
 
-    int p() const; // decrementa
+    int p(int n) const; // decrementa
 
-    int v() const; // incrementa
+    int v(int n) const; // incrementa
 
     void eliminar() const;
 

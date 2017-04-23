@@ -43,11 +43,6 @@ int Juego::correr() {
         sem_player[i].inicializar();
     }
 
-    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0); // semáforo para que empiecen a hacer las acciones del juego
-    sem_jugar.inicializar();
-    Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0); // semáforo para esperar a que jueguen todos
-    sem_turno_terminado.inicializar();
-
     char cant_str[32];
     sprintf(cant_str, "%d", cantJugadores);
 
@@ -57,9 +52,7 @@ int Juego::correr() {
         if (pid == 0) {
             char num_str[32];
             sprintf(num_str, "%d", i);
-            //std::cout << i << " - " << getpid() << std::endl;
             execl("tira_cartas", cant_str, num_str, NULL);
-            // tira_cartas.cpp
         }
     }
 
@@ -71,7 +64,7 @@ int Juego::correr() {
 
     std::cout << "# Se repartieron " << NUM_CARDS << ", empieza el juego" << std::endl;
 
-    sem_player[0].v(); // ahora puede jugar el jugador 1
+    sem_player[0].v(1); // ahora puede jugar el jugador 1
 
 //    Log::instance()->append(
 //            std::string(PLAYER_WON) + std::to_string(winner()),

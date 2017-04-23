@@ -23,6 +23,8 @@ public:
     ~SharedStack() {
 
     }
+
+    void show();
 };
 
 
