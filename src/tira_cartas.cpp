@@ -7,8 +7,6 @@
 #define NEXT_PLAYER(player_num) (player_num + 1)%num_players
 
 int main(int argc, char *argv[]) {
-
-
     int num_players = atoi(argv[0]);
     int player_num = atoi(argv[1]);
 
@@ -21,13 +19,22 @@ int main(int argc, char *argv[]) {
         sem_player.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
     }
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0);
+
     SharedStack centralCards(SHMEM_PATH, SHM_CARDS, NUM_CARDS);
     SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + player_num, NUM_CARDS);
+
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
 
     while (true) {
         std::cout << "[" << player_num << "]" << " Esperando mi turno " << std::endl;
         sem_player[player_num].p(1);
+
+        if(hayGanador.leer()){
+            // Habilito al proximo jugador para que termine su ejecucion
+            sem_player[NEXT_PLAYER(player_num)].v(1);
+            return(0);
+        }
+
         std::cout << "****************************************" << std::endl;
         std::cout << "[" << player_num << "]" << " Empieza mi turno " << std::endl;
 
@@ -46,7 +53,6 @@ int main(int argc, char *argv[]) {
         sem_turno_terminado.inicializar(); //  0
 
         for (int i = 0; i < num_players; i++) {
-
             Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 1);
             sem_jugar.v(1);
         }
@@ -64,7 +70,6 @@ int main(int argc, char *argv[]) {
                 cards_player.push(centralCards.pop());
             }
             centralCards.clear();
-
         }
 
         std::cout << "* Cartas *" << std::endl;
@@ -78,10 +83,14 @@ int main(int argc, char *argv[]) {
         std::cout << "[" << player_num << "]" << " Termina mi turno." << std::endl;
 
         if (myCards.size() == 0) {
-            std::cout << "Jugador " << player_num << " ganó." << std::endl;
+            std::cout << "El jugador " << player_num << " ganó." << std::endl;
             hayGanador.escribir(true);
-            std::cout << "Se seteo con " << hayGanador.leer() << " si hay ganador." << std::endl;
-            // matar todos los procesos
+
+            // Destrabo los procesos que realizan acciones para que puedan terminar
+            for (int i = 0; i < num_players; i++) {
+                Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 1);
+                sem_jugar.v(1);
+            }
             break;
         }
 
@@ -89,4 +98,5 @@ int main(int argc, char *argv[]) {
 
         sem_player[NEXT_PLAYER(player_num)].v(1);// habilito al proximo jugador para que tire su carta
     }
+    sem_player[NEXT_PLAYER(player_num)].v(1);// habilito al proximo jugador para que termine su ejecucion
 }

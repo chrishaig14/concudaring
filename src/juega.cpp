@@ -9,17 +9,23 @@
 #include "shared_stack/SharedStack.h"
 
 int main(int argc, char *argv[]) {
-    int num_players = atoi(argv[0]); // cantidad total de jugadores
     int player_num = atoi(argv[1]); // numero de jugador
+    int previous_card = -1;
+
     Semaphore sem_jugar("/bin/bash", SEM_JUGAR + player_num, 0);
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0);
+
     MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
+    MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
+
     SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
     SharedStack myCards("/bin/bash", SHM_CARDS + player_num + 1, NUM_CARDS);
-    int previous_card = -1;
 
     while (true) {
         sem_jugar.p(1); // hago lo mio segun la carta
+        if (hayGanador.leer()){
+            return 0; // Si hay un ganador, termino mi ejecucion
+        }
         int topCard = centralCards.top();
         if (topCard == previous_card || topCard == 7) {
             std::cout << "[" << player_num << "]" << " Pongo mano sobre la pila de cartas" << std::endl;

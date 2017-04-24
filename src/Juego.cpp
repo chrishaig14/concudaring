@@ -25,9 +25,7 @@ pid_t crearReferi(char* cant_str) {
 
 int Juego::correr() {
     std::vector<pid_t> pid_players(cantJugadores);
-
     std::vector<SharedStack> cartasJugadores;
-
     std::vector<Semaphore> sem_player;
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
@@ -75,14 +73,8 @@ int Juego::correr() {
 
     //pid_t ref_pid = crearReferi(cant_str);
 
-    while(!hayGanador.leer()) { // Podria usar otro semaforo para bloquear este proceso hasta que gane un jugador
-        sleep(1);
-    }
-
     for (int i = 0; i < cantJugadores; i++) {
-        kill(pid_players[i], SIGQUIT);
-        int child_return;
-        int id = wait(&child_return);
+        int id = wait(NULL);
         std::cout << "El proceso hijo " << id << " ha terminado." << std::endl;
     }
 
