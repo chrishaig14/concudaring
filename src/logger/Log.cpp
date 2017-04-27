@@ -7,7 +7,6 @@ Log *Log::log = 0;
 Log* Log::instance() {
     if (!log){
         log = new Log;
-        log->printNewLogger();
         log->pid = std::to_string(getpid());
     }
 

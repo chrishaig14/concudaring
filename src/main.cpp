@@ -4,19 +4,22 @@
 #include "logger/Log.h"
 #include "constantes.h"
 #include "Juego.h"
+#include "shmem/MemoriaCompartida.h"
 #include <algorithm>
 
 bool validarParametros(int argc, char **argv) {
 
+    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
     bool validos = true;
 
-    if(argc > 3) {
+    if(argc > 3 || argc < 2) {
         Log::instance()->Log::append(TOO_MANY_ARGS, Log::ERROR);
         validos = false;
     }
 
     if(argc == 3 && strcmp(argv[2], "d") == 0){
-        Log::instance()->loggerLevel = Log::DEBUG;
+        logLevel.escribir(Log::DEBUG);
+        Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
         Log::instance()->append(DEBUG_MODE, Log::DEBUG);
     }
 
@@ -32,10 +35,10 @@ void ayuda() {
 }
 
 int main(int argc, char** argv) {
-
-    std::cout << "MI PID: " << getpid() << std::endl;
-
+    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    logLevel.escribir(Log::ERROR);
     Log::instance()->loggerLevel = Log::ERROR;
+    Log::instance()->printNewLogger();
     if(!validarParametros(argc, argv)) {
         ayuda();
         return 0;

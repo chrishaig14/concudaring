@@ -26,8 +26,10 @@
 
 #define SHM_WINNER SHM_CARDS - 1
 
+#define SHM_LOG 77
+
 /* Log file name*/
 #define LOG_PATH "log.txt"
 
 /* Separator */
-#define SEPARATOR "*******************************************************"
+#define SEPARATOR "********************************************************"

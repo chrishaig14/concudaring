@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
     SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + player_num, NUM_CARDS);
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
+    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
     while (true) {
         std::ostringstream s;

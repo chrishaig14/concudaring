@@ -29,6 +29,7 @@ int Juego::correr() {
     std::vector<Semaphore> sem_player;
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
+    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
 
     hayGanador.escribir(false);
 

@@ -13,6 +13,8 @@ int main(int argc, char *argv[]) {
 
     MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
+    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
     SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
     SharedStack myCards("/bin/bash", SHM_CARDS + player_num + 1, NUM_CARDS);
