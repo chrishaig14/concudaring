@@ -1,9 +1,9 @@
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
 #include "shmem/MemoriaCompartida.h"
 #include "constantes.h"
 #include "Juego.h"
-#include "semaphore/Semaphore.h"
 #include <algorithm>
 #include <sys/wait.h>
 
@@ -54,32 +54,29 @@ int Juego::correr() {
         }
     }
 
-    // Repartir cartas
-
-    std::cout << "# Empiezo a repartir las cartas" << std::endl;
+    Log::instance()->append("Empiezo a repartir las cartas", Log::DEBUG);
 
     repartir_cartas(cartasJugadores);
 
-    std::cout << "# Se repartieron " << NUM_CARDS << ", empieza el juego" << std::endl;
+    std::ostringstream s1;
+    s1 << "Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
+    Log::instance()->append(s1.str(), Log::DEBUG);
 
     sem_player[0].v(1); // ahora puede jugar el jugador 1
-
-//    Log::instance()->append(
-//            std::string(PLAYER_WON) + std::to_string(winner()),
-//            pidReferi,
-//            Log::INFO);
 
     pid_t ref_pid = crearReferi(cant_str);
 
     for (int i = 0; i < cantJugadores; i++) {
         int id = wait(NULL);
-        std::cout << "El proceso hijo " << id << " ha terminado." << std::endl;
+        std::ostringstream s;
+        s << "El proceso hijo " << id << " ha terminado.";
+        Log::instance()->append(s.str(), Log::DEBUG);
     }
 
     limpiar_semaforos(sem_player);
 
     waitpid(ref_pid, NULL, 0);
-    std::cout << "El referi ha terminado." << std::endl;
+    Log::instance()->append("El referi ha terminado.", Log::DEBUG);
 
     return 0;
 }

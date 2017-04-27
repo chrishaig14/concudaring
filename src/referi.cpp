@@ -1,5 +1,6 @@
 #include <vector>
-#include "semaphore/Semaphore.h"
+#include <iostream>
+#include <sstream>
 #include "constantes.h"
 #include "shared_stack/SharedStack.h"
 #include "shmem/MemoriaCompartida.h"
@@ -18,8 +19,11 @@ int main(int argc, char** argv) {
             return 0;
         }
         for(int i = 0; i < cantJugadores; i++) {
+            std::ostringstream s;
             size_t cantCartas = cartasJugadores[i].size();
-            std::cout << "[REF] " << "El jugador " << i << " tiene en su mano ";
+
+            s << "[R] :: " << "El jugador " << i << " tiene en su mano ";
+            Log::instance()->append(s.str(), Log::DEBUG);
             cartasJugadores[i].show();
         }
         usleep(1000); // cada 1000 usecs me fijo las cartas que tiene cada jugador

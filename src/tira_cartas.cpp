@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+#include <sstream>
 #include "semaphore/Semaphore.h"
 #include "constantes.h"
 #include "shared_stack/SharedStack.h"
@@ -26,7 +28,11 @@ int main(int argc, char *argv[]) {
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
 
     while (true) {
-        std::cout << "[" << player_num << "]" << " Esperando mi turno " << std::endl;
+        std::ostringstream s;
+        std::ostringstream player;
+        player << "[" << player_num << "] :: ";
+        s << player.str() << "Esperando mi turno.";
+        Log::instance()->append(s.str(), Log::DEBUG);
         sem_player[player_num].p(1);
 
         if(hayGanador.leer()){
@@ -36,21 +42,28 @@ int main(int argc, char *argv[]) {
             return(0);
         }
 
-        std::cout << "****************************************" << std::endl;
-        std::cout << "[" << player_num << "]" << " Empieza mi turno " << std::endl;
+        Log::instance()->append(SEPARATOR, Log::DEBUG);
+        s.clear();
+        s.str("");
+        s << player.str() << "Empieza mi turno.";
+        Log::instance()->append(s.str(), Log::DEBUG);
 
         int myTopCard = myCards.pop();
         centralCards.push(myTopCard); // pongo la carta
+        s.clear();
+        s.str("");
+        s << player.str() << "Pongo carta " << myTopCard;
+        Log::instance()->append(s.str(), Log::DEBUG);
 
-        std::cout << "[" << player_num << "]" << " Pongo carta " << myTopCard << std::endl;
-
-        std::cout << "Cartas centrales: ";
+        s.clear();
+        s.str("");
+        s << player.str() << "Cartas centrales: ";
+        Log::instance()->append(s.str(), Log::DEBUG);
         centralCards.show();
 
         MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
 
         numero_jugador.escribir(0);
-
 
         sem_turno_terminado.inicializar(); //  0
 
@@ -82,10 +95,15 @@ int main(int argc, char *argv[]) {
             std::cout << std::endl;
         }
 */
-        std::cout << "[" << player_num << "]" << " Termina mi turno." << std::endl;
+        s.clear();
+        s.str("");
+        s << player.str() << "Termina mi turno.";
+        Log::instance()->append(s.str(), Log::DEBUG);
 
         if (myCards.size() == 0) {
-            std::cout << "El jugador " << player_num << " ganó." << std::endl;
+            std::ostringstream sfin;
+            sfin << "El jugador " << player_num << " ganó.";
+            Log::instance()->append(sfin.str(), Log::DEBUG);
             hayGanador.escribir(true);
 
             // Destrabo los procesos que realizan acciones para que puedan terminar
@@ -96,7 +114,7 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        std::cout << "****************************************" << std::endl;
+        Log::instance()->append(SEPARATOR, Log::DEBUG);
 
         sem_player[NEXT_PLAYER(player_num)].v(1);// habilito al proximo jugador para que tire su carta
     }

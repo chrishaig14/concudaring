@@ -1,5 +1,6 @@
 #include "Log.h"
 #include "../constantes.h"
+#include "../lock_file/LockFile.h"
 
 Log *Log::log = 0;
 
@@ -20,14 +21,17 @@ void Log::closeLog() {
     log = nullptr;
 }
 
-void Log::append(std::string msg, int owner, LOG_TYPE logType) {
+void Log::append(std::string msg, LOG_TYPE logType) {
+    LockFile lock(LOG_PATH);
     std::string fileName(LOG_PATH);
+    lock.tomarLock();
     std::ofstream out(fileName, std::ios_base::app);
 
     if(logType >= loggerLevel)
-        out << timestamp() + ":: pid: " + this->pid + " :: " + logTypeToString(logType) + msg + "\n";
+        out << timestamp() + ":: pid " +  std::to_string(getpid()) + logTypeToString(logType) + msg + "\n";
 
     out.close();
+    lock.liberarLock();
 }
 
 std::string Log::timestamp() {
@@ -41,8 +45,8 @@ std::string Log::logTypeToString(LOG_TYPE logType){
     std::string strLogType;
 
     switch (logType) {
-        case INFO: strLogType = ": INFO "; break;
-        case ERROR: strLogType = ": ERROR "; break;
+        case DEBUG: strLogType = " :: DEBUG :: "; break;
+        case ERROR: strLogType = " :: ERROR :: "; break;
     }
 
     return strLogType;
@@ -54,9 +58,9 @@ void Log::printNewLogger(){
     std::ofstream out(fileName, std::ios_base::app);
 
     out << "*&------------------------------------------------------------------------------------------------------*&\n";
-    out << "*&                               Comienzo de nuevo juego                                                *&\n";
+    out << "*&                                       Comienzo de nuevo juego                                        *&\n";
     out << "*&------------------------------------------------------------------------------------------------------*&\n";
-    out << "*& Corrida correspondiente a la fecha: " + timestamp() + "                                         *&\n";
+    out << "*&                   Corrida correspondiente a la fecha: " + timestamp() + "                       *&\n";
     out << "*&------------------------------------------------------------------------------------------------------*&\n";
     out.close();
 

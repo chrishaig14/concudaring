@@ -12,14 +12,13 @@ class Log {
 public:
 
     typedef enum {
-        INFO = 0, ERROR,
+        DEBUG = 0, ERROR = 1,
     } LOG_TYPE;
 
     static Log *instance();
     LOG_TYPE loggerLevel;
-    void append(std::string msg, int owner, LOG_TYPE logType);
+    void append(std::string msg, LOG_TYPE logType);
     void closeLog();
-
 
 private:
 

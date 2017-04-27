@@ -55,17 +55,17 @@ void MemoriaCompartida<T>::crear(const std::string &archivo, const char letra) {
                 this->ptrDatos = static_cast<T *> (tmpPtr);
             } else {
                 std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-                Log::instance()->append(mensaje, getpid(), Log::ERROR);
+                Log::instance()->append(mensaje, Log::ERROR);
                 throw mensaje;
             }
         } else {
             std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
-            Log::instance()->append(mensaje, getpid(), Log::ERROR);
+            Log::instance()->append(mensaje, Log::ERROR);
             throw mensaje;
         }
     } else {
         std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
-        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -81,7 +81,7 @@ void MemoriaCompartida<T>::liberar() {
         }
     } else {
         std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
-        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -98,17 +98,17 @@ MemoriaCompartida<T>::MemoriaCompartida(const std::string &archivo, const char l
                 this->ptrDatos = static_cast<T *> (tmpPtr);
             } else {
                 std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-                Log::instance()->append(mensaje, getpid(), Log::ERROR);
+                Log::instance()->append(mensaje, Log::ERROR);
                 throw mensaje;
             }
         } else {
             std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
-            Log::instance()->append(mensaje, getpid(), Log::ERROR);
+            Log::instance()->append(mensaje, Log::ERROR);
             throw mensaje;
         }
     } else {
         std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
-        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -121,7 +121,7 @@ MemoriaCompartida<T>::MemoriaCompartida(const MemoriaCompartida &origen):shmId(o
         this->ptrDatos = static_cast<T *> (tmpPtr);
     } else {
         std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -137,7 +137,7 @@ MemoriaCompartida<T>::~MemoriaCompartida() {
         }
     } else {
         std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
-        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         std::cerr << mensaje << std::endl;
     }
 }

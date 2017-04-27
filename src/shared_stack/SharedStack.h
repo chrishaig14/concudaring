@@ -2,6 +2,7 @@
 #define CONCUDARING_SHAREDSTACK_H
 
 #include <string>
+#include <iomanip>
 #include "../shmem/MemoriaCompartidaArray.h"
 
 class SharedStack {

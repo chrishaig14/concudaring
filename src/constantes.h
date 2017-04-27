@@ -8,7 +8,7 @@
 #define GAME_EXIT_ERROR "Ocurrió un error durante la ejecución y no se finalizó el juego correctamente."
 
 /* INFO messages */
-#define INFO_MODE "Se ejecutó el programa en modo INFO."
+#define DEBUG_MODE "Se ejecutó el programa en modo DEBUG."
 #define STARTING_WITH "Se dará comienzo al juego con jugadores: "
 #define PLAYER_WON "Ha ganado el jugador: "
 #define GAME_EXIT_OK "El juego finalizó correctamente."
@@ -28,3 +28,6 @@
 
 /* Log file name*/
 #define LOG_PATH "log.txt"
+
+/* Separator */
+#define SEPARATOR "*******************************************************"

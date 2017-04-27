@@ -32,7 +32,7 @@ int SharedStack::pop() {
 
 void SharedStack::show() {
     for (int i = 0; i < shmem[0]; i++) {
-        std::cout << "|" << shmem[i + 1];
+        std::cout << "|" << std::setw(2) << std::setfill('0') << shmem[i + 1];
     }
     std::cout << "|" << std::endl;
 }
