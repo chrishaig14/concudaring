@@ -4,6 +4,7 @@
 #include <vector>
 #include "shmem/MemoriaCompartidaArray.h"
 #include "shared_stack/SharedStack.h"
+#include "semaphore/Semaphore.h"
 
 class Juego {
 public:
@@ -15,6 +16,7 @@ private:
     int cantJugadores;
 
     void repartir_cartas(std::vector<SharedStack> &cartasJugadores);
+    void limpiar_semaforos(std::vector<Semaphore> &sem_jugadores);
 };
 
 

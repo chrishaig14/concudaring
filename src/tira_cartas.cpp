@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
             sem_player[NEXT_PLAYER(player_num)].v(1);
+            sem_turno_terminado.eliminar();
             return(0);
         }
 

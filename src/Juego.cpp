@@ -78,6 +78,8 @@ int Juego::correr() {
         std::cout << "El proceso hijo " << id << " ha terminado." << std::endl;
     }
 
+    limpiar_semaforos(sem_player);
+
     return 0;
 }
 
@@ -96,5 +98,16 @@ void Juego::repartir_cartas(std::vector<SharedStack> &cartasJugadores) {
     // reparto cartas
     for (int i = 0; i < NUM_CARDS; ++i) {
         cartasJugadores[i % this->cantJugadores].push(deck[i]);
+    }
+}
+
+void Juego::limpiar_semaforos(std::vector<Semaphore> &sem_jugadores) {
+    for (int i = 0; i < cantJugadores; i++) {
+        sem_jugadores[i].eliminar();
+    }
+
+    for (int i = 0; i < cantJugadores; i++) {
+        Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 1);
+        sem_jugar.eliminar();
     }
 }
