@@ -27,7 +27,7 @@ void Log::append(std::string msg, LOG_TYPE logType) {
     std::ofstream out(fileName, std::ios_base::app);
 
     if(logType >= loggerLevel)
-        out << timestamp() + ":: pid " +  std::to_string(getpid()) + logTypeToString(logType) + msg + "\n";
+        out << timestamp() + "::[" +  std::to_string(getpid()) + logTypeToString(logType) + msg + "\n";
 
     out.close();
     lock.liberarLock();
@@ -44,8 +44,8 @@ std::string Log::logTypeToString(LOG_TYPE logType){
     std::string strLogType;
 
     switch (logType) {
-        case DEBUG: strLogType = " :: DEBUG :: "; break;
-        case ERROR: strLogType = " :: ERROR :: "; break;
+        case DEBUG: strLogType = "]::DEBUG::"; break;
+        case ERROR: strLogType = "]::ERROR::"; break;
     }
 
     return strLogType;

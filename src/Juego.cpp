@@ -60,7 +60,7 @@ int Juego::correr() {
     repartir_cartas(cartasJugadores);
 
     std::ostringstream s1;
-    s1 << "Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
+    s1 << "[-]:: Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     sem_player[0].v(1); // ahora puede jugar el jugador 1
@@ -70,14 +70,14 @@ int Juego::correr() {
     for (int i = 0; i < cantJugadores; i++) {
         int id = wait(NULL);
         std::ostringstream s;
-        s << "El proceso hijo " << id << " ha terminado.";
+        s << "[-]:: El proceso hijo " << id << " ha terminado.";
         Log::instance()->append(s.str(), Log::DEBUG);
     }
 
     limpiar_semaforos(sem_player);
 
     waitpid(ref_pid, NULL, 0);
-    Log::instance()->append("El referi ha terminado.", Log::DEBUG);
+    Log::instance()->append("[-]:: El referi ha terminado.", Log::DEBUG);
 
     return 0;
 }

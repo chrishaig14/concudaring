@@ -24,9 +24,9 @@ int main(int argc, char** argv) {
             std::ostringstream s;
             size_t cantCartas = cartasJugadores[i].size();
 
-            s << "[R] :: " << "El jugador " << i << " tiene en su mano ";
-            Log::instance()->append(s.str(), Log::DEBUG);
-            cartasJugadores[i].show();
+            s << "[R]:: " << "El jugador " << i << " tiene en su mano ";
+            Log::instance()->append(s.str() + cartasJugadores[i].show(), Log::DEBUG);
+
         }
         usleep(1000); // cada 1000 usecs me fijo las cartas que tiene cada jugador
     }

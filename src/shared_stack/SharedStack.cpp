@@ -30,11 +30,14 @@ int SharedStack::pop() {
     // Error
 }
 
-void SharedStack::show() {
+std::string SharedStack::show() {
+    std::ostringstream s;
+    if(shmem[0] == 0) return "| |";
     for (int i = 0; i < shmem[0]; i++) {
-        std::cout << "|" << std::setw(2) << std::setfill('0') << shmem[i + 1];
+        s << "|" << std::setw(2) << std::setfill('0') << shmem[i + 1];
     }
-    std::cout << "|" << std::endl;
+    s << "|";
+    return s.str();
 }
 
 SharedStack::SharedStack(const std::string &file, char char_id, size_t total_size) : shmem(file, char_id,

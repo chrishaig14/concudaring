@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+#include <sstream>
 #include "semaphore/Semaphore.h"
 #include "constantes.h"
 #include "shmem/MemoriaCompartida.h"
@@ -19,26 +21,32 @@ int main(int argc, char *argv[]) {
     SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
     SharedStack myCards("/bin/bash", SHM_CARDS + player_num + 1, NUM_CARDS);
 
+    std::ostringstream player;
+    player << "[" << player_num << "]:: ";
+
     while (true) {
         sem_jugar.p(1); // hago lo mio segun la carta
+        std::ostringstream s;
+        s << player.str();
         if (hayGanador.leer()){
             return 0; // Si hay un ganador, termino mi ejecucion
         }
         int topCard = centralCards.top();
         if (topCard == previous_card || topCard == 7) {
-            std::cout << "[" << player_num << "]" << " Pongo mano sobre la pila de cartas" << std::endl;
+            s << "Pongo mano sobre la pila de cartas";
             numero_jugador.escribir(player_num + 1);
         } else {
             if (topCard == 10) {
-                std::cout << "[" << player_num << "]" << " Buenos dias señorita" << std::endl;
+                s << "Buenos dias señorita";
             } else if (topCard == 11) {
-                std::cout << "[" << player_num << "]" << " Buenas noche caballero" << std::endl;
+                s << "Buenas noche caballero";
             } else if (topCard == 12) {
-                std::cout << "[" << player_num << "]" << " Saludo militar" << std::endl;
+                s << "Saludo militar";
             } else {
-                std::cout << "[" << player_num << "]" << " No hago nada" << std::endl;
+                s << "No hago nada";
             }
         }
+        Log::instance()->append(s.str(), Log::DEBUG);
         previous_card = topCard;
         sem_turno_terminado.v(1);
     }

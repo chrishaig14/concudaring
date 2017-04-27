@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
 #include "../shmem/MemoriaCompartidaArray.h"
 
 class SharedStack {
@@ -25,7 +27,7 @@ public:
 
     }
 
-    void show();
+    std::string show();
 };
 
 

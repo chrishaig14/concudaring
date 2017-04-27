@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
     while (true) {
         std::ostringstream s;
         std::ostringstream player;
-        player << "[" << player_num << "] :: ";
-        s << player.str() << "Esperando mi turno.";
+        player << "[" << player_num << "]:: ";
+        s << player.str() << "Esperando mi turno";
         Log::instance()->append(s.str(), Log::DEBUG);
         sem_player[player_num].p(1);
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         Log::instance()->append(SEPARATOR, Log::DEBUG);
         s.clear();
         s.str("");
-        s << player.str() << "Empieza mi turno.";
+        s << player.str() << "Empieza mi turno";
         Log::instance()->append(s.str(), Log::DEBUG);
 
         int myTopCard = myCards.pop();
@@ -60,8 +60,7 @@ int main(int argc, char *argv[]) {
         s.clear();
         s.str("");
         s << player.str() << "Cartas centrales: ";
-        Log::instance()->append(s.str(), Log::DEBUG);
-        centralCards.show();
+        Log::instance()->append(s.str() + centralCards.show(), Log::DEBUG);
 
         MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
 
@@ -81,7 +80,10 @@ int main(int argc, char *argv[]) {
         } else {
             // Le doy las cartas al último que tocó numero_jugador
             SharedStack cards_player("/bin/bash", SHM_CARDS + numero_jugador.leer(), NUM_CARDS);
-            std::cout << "* El jugador " << numero_jugador.leer() - 1 << " se lleva las cartas *" << std::endl;
+            s.clear();
+            s.str("");
+            s << "[-]:: El jugador " << numero_jugador.leer() - 1 << " se lleva las cartas";
+            Log::instance()->append(s.str(), Log::DEBUG);
             int n_cards = centralCards.size();
             for (int i = 0; i < n_cards; i++) {
                 cards_player.push(centralCards.pop());
@@ -99,12 +101,12 @@ int main(int argc, char *argv[]) {
 */
         s.clear();
         s.str("");
-        s << player.str() << "Termina mi turno.";
+        s << player.str() << "Termina mi turno";
         Log::instance()->append(s.str(), Log::DEBUG);
 
         if (myCards.size() == 0) {
             std::ostringstream sfin;
-            sfin << "El jugador " << player_num << " ganó.";
+            sfin << "[-]:: El jugador " << player_num << " ganó";
             Log::instance()->append(sfin.str(), Log::DEBUG);
             hayGanador.escribir(true);
 
