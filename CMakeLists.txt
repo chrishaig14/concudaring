@@ -15,7 +15,7 @@ set(SOURCE_FILES
         src/constantes.h
         src/Juego.cpp
         src/Juego.h
-        src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/shared_stack/SharedStack.cpp src/shared_stack/SharedStack.h)
+        src/semaphore/Semaphore.cpp src/semaphore/Semaphore.h src/shared_stack/SharedStack.cpp src/shared_stack/SharedStack.h src/lock_file/LockFile.cpp src/lock_file/LockFile.h)
 
 add_executable(juega ${SOURCE_FILES} src/juega.cpp)
 

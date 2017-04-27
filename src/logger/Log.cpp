@@ -1,7 +1,7 @@
 #include "Log.h"
+#include "../constantes.h"
 
 Log *Log::log = 0;
-const std::string fileout = "log-concudaring.txt";
 
 Log* Log::instance() {
     if (!log){
@@ -21,8 +21,7 @@ void Log::closeLog() {
 }
 
 void Log::append(std::string msg, int owner, LOG_TYPE logType) {
-
-    std::string fileName(fileout);
+    std::string fileName(LOG_PATH);
     std::ofstream out(fileName, std::ios_base::app);
 
     if(logType >= loggerLevel)
@@ -51,7 +50,7 @@ std::string Log::logTypeToString(LOG_TYPE logType){
 
 void Log::printNewLogger(){
 
-    std::string fileName(fileout);
+    std::string fileName(LOG_PATH);
     std::ofstream out(fileName, std::ios_base::app);
 
     out << "*&------------------------------------------------------------------------------------------------------*&\n";

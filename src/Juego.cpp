@@ -69,9 +69,7 @@ int Juego::correr() {
 //            pidReferi,
 //            Log::INFO);
 
-//    std::cout << PLAYER_WON << winner() << std::endl;
-
-    //pid_t ref_pid = crearReferi(cant_str);
+    pid_t ref_pid = crearReferi(cant_str);
 
     for (int i = 0; i < cantJugadores; i++) {
         int id = wait(NULL);
@@ -79,6 +77,9 @@ int Juego::correr() {
     }
 
     limpiar_semaforos(sem_player);
+
+    waitpid(ref_pid, NULL, 0);
+    std::cout << "El referi ha terminado." << std::endl;
 
     return 0;
 }

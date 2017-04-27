@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 
         std::cout << "[" << player_num << "]" << " Pongo carta " << myTopCard << std::endl;
 
+        std::cout << "Cartas centrales: ";
         centralCards.show();
 
         MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
             }
             centralCards.clear();
         }
-
+/*
         std::cout << "* Cartas *" << std::endl;
         for (int i = 0; i < num_players; i++) {
             SharedStack cards_player("/bin/bash", SHM_CARDS + i + 1, NUM_CARDS);
@@ -80,7 +81,7 @@ int main(int argc, char *argv[]) {
             cards_player.show();
             std::cout << std::endl;
         }
-
+*/
         std::cout << "[" << player_num << "]" << " Termina mi turno." << std::endl;
 
         if (myCards.size() == 0) {

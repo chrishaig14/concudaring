@@ -25,3 +25,6 @@
 #define NUM_CARDS 48
 
 #define SHM_WINNER SHM_CARDS - 1
+
+/* Log file name*/
+#define LOG_PATH "log.txt"

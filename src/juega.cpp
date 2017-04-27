@@ -1,7 +1,3 @@
-//
-// Created by chris on 12/04/17.
-//
-
 #include <vector>
 #include "semaphore/Semaphore.h"
 #include "constantes.h"
