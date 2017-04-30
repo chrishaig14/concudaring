@@ -25,11 +25,11 @@ int main(int argc, char *argv[]) {
 
     while (true) {
         semJugar.p(1); // hago lo mio segun la carta
-        std::ostringstream s;
-        s << player.str();
         if (hayGanador.leer()){
             return 0; // Si hay un ganador, termino mi ejecucion
         }
+        std::ostringstream s;
+        s << player.str();
         int tope = centralCards.top();
         if (tope == cartaAnterior || tope == 7) {
             s << "Pongo mano sobre la pila de cartas";

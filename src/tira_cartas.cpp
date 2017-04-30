@@ -101,10 +101,7 @@ int main(int argc, char *argv[]) {
             hayGanador.escribir(true);
 
             // Destrabo los procesos que realizan acciones para que puedan terminar
-            for (int i = 0; i < cantJugadores; i++) {
-                Semaphore semJugar("/bin/bash", SEM_JUGAR + i, 1);
-                semJugar.v(1);
-            }
+            semJugar.v(cantJugadores);
             break;
         }
 
