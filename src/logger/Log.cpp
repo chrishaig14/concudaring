@@ -7,17 +7,8 @@ Log *Log::log = 0;
 Log* Log::instance() {
     if (!log){
         log = new Log;
-        log->pid = std::to_string(getpid());
     }
-
     return log;
-}
-
-void Log::closeLog() {
-    if(log)
-        delete log;
-
-    log = nullptr;
 }
 
 void Log::append(std::string msg, LOG_TYPE logType) {

@@ -19,13 +19,11 @@ public:
     LOG_TYPE loggerLevel;
     void append(std::string msg, LOG_TYPE logType);
     void printNewLogger();
-    void closeLog();
 
 private:
     static Log *log;
     std::string logTypeToString(LOG_TYPE logType);
     std::string timestamp();
-    std::string pid;
 };
 
 #endif /* LOG_H_ */
