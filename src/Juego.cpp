@@ -31,6 +31,10 @@ int Juego::correr() {
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
 
+    std::ostringstream s1;
+    std::ostringstream smain;
+    smain << "[-]:: ";
+
     hayGanador.escribir(false);
 
     for (int i = 0; i < cantJugadores; i++) {
@@ -55,20 +59,20 @@ int Juego::correr() {
         }
     }
 
-    Log::instance()->append("Empiezo a repartir las cartas", Log::DEBUG);
+    s1 << smain.str() << "Empiezo a repartir las cartas";
+    Log::instance()->append(s1.str(), Log::DEBUG);
 
     repartir_cartas(cartasJugadores);
 
-    std::ostringstream s1;
-    s1 << "[-]:: Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
+    s1.str("");
+    s1 << smain.str() << "Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     int first_player = rand()%cantJugadores;
 
     sem_player[first_player].v(1); // un jugador random puede jugar
-    s1.clear();
     s1.str("");
-    s1 << "[-]:: Comienza el jugador " << first_player;
+    s1 << smain.str() << "Comienza el jugador " << first_player;
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     pid_t ref_pid = crearReferi(cant_str);
@@ -76,14 +80,17 @@ int Juego::correr() {
     for (int i = 0; i < cantJugadores; i++) {
         int id = wait(NULL);
         std::ostringstream s;
-        s << "[-]:: El proceso hijo " << id << " ha terminado.";
+        s << smain.str() << "El proceso hijo " << id << " ha terminado.";
         Log::instance()->append(s.str(), Log::DEBUG);
     }
 
     limpiar_semaforos(sem_player);
 
     waitpid(ref_pid, NULL, 0);
-    Log::instance()->append("[-]:: El referi ha terminado.", Log::DEBUG);
+    s1.clear();
+    s1.str(smain .str());
+    s1 << "El referi ha terminado.";
+    Log::instance()->append(s1.str(), Log::DEBUG);
 
     return 0;
 }

@@ -13,13 +13,12 @@ int main(int argc, char *argv[]) {
     Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0);
 
-    MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
+    MemoriaCompartida<int> numJugador("/bin/bash", SHM_PLAYER_NUM);
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
     Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
     SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
-    SharedStack myCards("/bin/bash", SHM_CARDS + player_num + 1, NUM_CARDS);
 
     std::ostringstream player;
     player << "[" << player_num << "]:: ";
@@ -34,7 +33,7 @@ int main(int argc, char *argv[]) {
         int topCard = centralCards.top();
         if (topCard == previous_card || topCard == 7) {
             s << "Pongo mano sobre la pila de cartas";
-            numero_jugador.escribir(player_num + 1);
+            numJugador.escribir(player_num + 1);
         } else {
             if (topCard == 10) {
                 s << "Buenos dias señorita";

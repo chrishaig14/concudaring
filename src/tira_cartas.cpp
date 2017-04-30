@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
+
     Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
     while (true) {
@@ -63,8 +65,6 @@ int main(int argc, char *argv[]) {
         s << player.str() << "Cartas centrales: ";
         Log::instance()->append(s.str() + centralCards.show(), Log::DEBUG);
 
-        MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);
-
         numero_jugador.escribir(0);
 
         sem_turno_terminado.inicializar(); //  0
@@ -88,15 +88,7 @@ int main(int argc, char *argv[]) {
             }
             centralCards.clear();
         }
-/*
-        std::cout << "* Cartas *" << std::endl;
-        for (int i = 0; i < num_players; i++) {
-            SharedStack cards_player("/bin/bash", SHM_CARDS + i + 1, NUM_CARDS);
-            std::cout << "[" << i << "]: ";
-            cards_player.show();
-            std::cout << std::endl;
-        }
-*/
+
         s.clear();
         s.str("");
         s << player.str() << "Termina mi turno";

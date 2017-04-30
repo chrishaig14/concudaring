@@ -44,9 +44,11 @@ int main(int argc, char** argv) {
         return 0;
     }
     int numJugadores = atoi(argv[1]);
-    Log::instance()->append(
-        std::string(STARTING_WITH) + std::to_string(numJugadores),
-        Log::DEBUG);
+
+    std::ostringstream s;
+    s << "[-]:: ";
+    s << STARTING_WITH << numJugadores;
+    Log::instance()->append(s.str(), Log::DEBUG);
 
     Juego* juego = new Juego(numJugadores);
     int resultado = juego->correr();
