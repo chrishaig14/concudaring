@@ -28,6 +28,6 @@ int main(int argc, char** argv) {
             Log::instance()->append(s.str() + cartasJugadores[i].show(), Log::DEBUG);
 
         }
-        usleep(1000); // cada 1000 usecs me fijo las cartas que tiene cada jugador
+        usleep(2000); // cada 1000 usecs me fijo las cartas que tiene cada jugador
     }
 }

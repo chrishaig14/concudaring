@@ -1,3 +1,5 @@
+#include <iostream>
+#include <sstream>
 #include "Log.h"
 #include "../constantes.h"
 #include "../lock_file/LockFile.h"
@@ -15,12 +17,18 @@ void Log::append(std::string msg, LOG_TYPE logType) {
     LockFile lock(LOG_PATH);
     std::string fileName(LOG_PATH);
     lock.tomarLock();
-    std::ofstream out(fileName, std::ios_base::app);
+    //std::ofstream out(fileName, std::ios_base::app);
+    std::ostringstream out;
 
-    if(logType >= loggerLevel)
+    if(logType >= loggerLevel) {
         out << timestamp() + "::[" +  std::to_string(getpid()) + logTypeToString(logType) + msg + "\n";
+    }
+    ssize_t escrito = lock.escribir(out.str().c_str(), out.str().length());
 
-    out.close();
+    if (escrito != out.str().length())
+        std::cerr << "Ha ocurrido un error al escribir en el archivo de log." << std::endl;
+    
+    //out.close();
     lock.liberarLock();
 }
 
