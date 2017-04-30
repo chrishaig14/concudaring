@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     int player_num = atoi(argv[1]); // numero de jugador
     int previous_card = -1;
 
-    Semaphore sem_jugar("/bin/bash", SEM_JUGAR + player_num, 0);
+    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0);
 
     MemoriaCompartida<int> numero_jugador("/bin/bash", SHM_PLAYER_NUM);

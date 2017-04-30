@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
         sem_player.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
     }
     Semaphore sem_turno_terminado("/bin/bash", SEM_TURNO, 0);
+    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 1);
 
     SharedStack centralCards(SHMEM_PATH, SHM_CARDS, NUM_CARDS);
     SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + player_num, NUM_CARDS);
@@ -68,10 +69,7 @@ int main(int argc, char *argv[]) {
 
         sem_turno_terminado.inicializar(); //  0
 
-        for (int i = 0; i < num_players; i++) {
-            Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 1);
-            sem_jugar.v(1);
-        }
+        sem_jugar.v(num_players);
 
         sem_turno_terminado.p(num_players);
 

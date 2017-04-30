@@ -32,7 +32,7 @@ int Semaphore::inicializar() const {
 int Semaphore::p(int n) const {
     struct sembuf operacion;
     operacion.sem_num = 0; // numero de Semaphore
-    operacion.sem_op = -n; // restar 1 al Semaphore
+    operacion.sem_op = -n; // restar n al Semaphore
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     return resultado;
@@ -41,7 +41,7 @@ int Semaphore::p(int n) const {
 int Semaphore::v(int n) const {
     struct sembuf operacion;
     operacion.sem_num = 0; // numero de Semaphore
-    operacion.sem_op = n; // sumar 1 al Semaphore
+    operacion.sem_op = n; // sumar n al Semaphore
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     return resultado;

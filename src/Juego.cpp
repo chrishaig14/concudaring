@@ -63,7 +63,13 @@ int Juego::correr() {
     s1 << "[-]:: Se repartieron " << NUM_CARDS << " cartas, empieza el juego.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
-    sem_player[0].v(1); // ahora puede jugar el jugador 1
+    int first_player = rand()%cantJugadores;
+
+    sem_player[first_player].v(1); // un jugador random puede jugar
+    s1.clear();
+    s1.str("");
+    s1 << "[-]:: Comienza el jugador " << first_player;
+    Log::instance()->append(s1.str(), Log::DEBUG);
 
     pid_t ref_pid = crearReferi(cant_str);
 
