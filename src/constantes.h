@@ -17,6 +17,7 @@
 #define SHMEM_PATH "/bin/bash"
 
 #define SEM_JUGAR 102
+#define SEM_JUGADOR 103
 #define SEM_TURNO 101
 
 #define SHM_PLAYER_NUM 220

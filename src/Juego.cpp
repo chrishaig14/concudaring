@@ -37,13 +37,16 @@ int Juego::correr() {
 
     hayGanador.escribir(false);
 
+    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
+    sem_jugar.inicializar();
+
     for (int i = 0; i < cantJugadores; i++) {
         // semáforos para el turno de cada jugador
         // inicializar todos en 0, para que se queden esperando
         semJugador.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
         semJugador[i].inicializar();
-        Semaphore sem_jugar("/bin/bash", SEM_JUGAR + i, 0);
-        sem_jugar.inicializar();
+        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR + i, cantJugadores);
+        sem_jugador.inicializar();
     }
 
     char cant_str[32];
