@@ -13,9 +13,9 @@ int main(int argc, char *argv[]) {
 
     Semaphore semJugar("/bin/bash", SEM_JUGAR, 0);
 
-    std::vector<Semaphore> semJugador;
+    std::vector<Semaphore> semJugadorAccion;
     for (int i = 0; i < cantJugadores; i++) {
-        semJugador.push_back(Semaphore("/bin/bash", SEM_JUGADOR + i, 0));
+        semJugadorAccion.push_back(Semaphore("/bin/bash", SEM_JUGADOR + i, 0));
     }
 
     Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO, 0);
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     player << "[" << playerNum << "]:: ";
 
     while (true) {
-        semJugador[playerNum].p(cantJugadores);
+        semJugadorAccion[playerNum].p(cantJugadores);
         semJugar.p(1); // hago lo mio segun la carta
         if (hayGanador.leer()){
             return 0; // Si hay un ganador, termino mi ejecucion
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         Log::instance()->append(s.str(), Log::DEBUG);
         cartaAnterior = tope;
         for (int i = 0; i < cantJugadores; i++) {
-            semJugador[i].v(1);
+            semJugadorAccion[i].v(1);
         }
         semTurnoTerminado.v(1);
     }

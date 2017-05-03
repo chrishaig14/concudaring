@@ -27,6 +27,7 @@ int Juego::correr() {
     std::vector<pid_t> pidPlayers(cantJugadores);
     std::vector<SharedStack> cartasJugadores;
     std::vector<Semaphore> semJugador;
+    //Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
@@ -37,8 +38,7 @@ int Juego::correr() {
 
     hayGanador.escribir(false);
 
-    Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
-    sem_jugar.inicializar();
+    //sem_jugar.inicializar();
 
     for (int i = 0; i < cantJugadores; i++) {
         // semáforos para el turno de cada jugador
@@ -91,8 +91,8 @@ int Juego::correr() {
 
     waitpid(ref_pid, NULL, 0);
     s1.clear();
-    s1.str(smain .str());
-    s1 << "El referi ha terminado.";
+    s1.str("");
+    s1 << smain .str() << "El referi ha terminado.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     return 0;
@@ -124,5 +124,9 @@ void Juego::limpiarSemaforos(std::vector<Semaphore> &semJugadores) {
     for (int i = 0; i < cantJugadores; i++) {
         Semaphore semJugar("/bin/bash", SEM_JUGAR + i, 1);
         semJugar.eliminar();
+    }
+    for (int i = 0; i < cantJugadores; i++) {
+        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR + i, cantJugadores);
+        sem_jugador.eliminar();
     }
 }

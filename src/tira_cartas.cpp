@@ -16,9 +16,9 @@ int main(int argc, char *argv[]) {
         execv("juega", argv);
     }
 
-    std::vector<Semaphore> sem_player;
+    std::vector<Semaphore> semJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        sem_player.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
+        semJugador.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
     }
     Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO, 0);
     Semaphore semJugar("/bin/bash", SEM_JUGAR, 1);
@@ -38,11 +38,11 @@ int main(int argc, char *argv[]) {
         player << "[" << playerNum << "]:: ";
         s << player.str() << "Esperando mi turno";
         Log::instance()->append(s.str(), Log::DEBUG);
-        sem_player[playerNum].p(1);
+        semJugador[playerNum].p(1);
 
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
-            sem_player[NEXT_PLAYER(playerNum)].v(1);
+            semJugador[NEXT_PLAYER(playerNum)].v(1);
             semTurnoTerminado.eliminar();
             return(0);
         }
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 
         Log::instance()->append(SEPARATOR, Log::DEBUG);
 
-        sem_player[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que tire su carta
+        semJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que tire su carta
     }
-    sem_player[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que termine su ejecucion
+    semJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que termine su ejecucion
 }
