@@ -16,12 +16,12 @@ int main(int argc, char *argv[]) {
         execv("realiza_accion", argv);
     }
 
-    std::vector<Semaphore> semJugador;
+    std::vector<Semaphore> semTurnoJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        semJugador.push_back(Semaphore("/bin/bash", (char) (SEM_JUGADOR + i), 0));
+        semTurnoJugador.push_back(Semaphore("/bin/bash", SEM_TURNO_JUGADOR + i, 0));
     }
-    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO, 0);
-    Semaphore semJugar("/bin/bash", SEM_JUGAR, 1);
+    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
+    Semaphore semJugar("/bin/bash", SEM_ACCIONES, 0);
 
     SharedStack centralCards(SHMEM_PATH, SHM_CARDS, NUM_CARDS);
     SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + playerNum, NUM_CARDS);
@@ -38,12 +38,11 @@ int main(int argc, char *argv[]) {
         player << "[" << playerNum << "]:: ";
         s << player.str() << "Esperando mi turno";
         Log::instance()->append(s.str(), Log::DEBUG);
-        semJugador[playerNum].p(1);
+        semTurnoJugador[playerNum].p(1);
 
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
-            semJugador[NEXT_PLAYER(playerNum)].v(1);
-            semTurnoTerminado.eliminar();
+            semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);
             return(0);
         }
 
@@ -68,6 +67,8 @@ int main(int argc, char *argv[]) {
         ultimoJugador.escribir(0);
 
         semTurnoTerminado.inicializar(); //  0
+
+        semJugar.inicializar();
 
         semJugar.v(cantJugadores);
 
@@ -99,15 +100,20 @@ int main(int argc, char *argv[]) {
             sfin << "[-]:: El jugador " << playerNum << " ganó";
             Log::instance()->append(sfin.str(), Log::DEBUG);
             hayGanador.escribir(true);
-
             // Destrabo los procesos que realizan acciones para que puedan terminar
+
+            for (int i = 0; i < cantJugadores; i++) {
+                Semaphore s("/bin/bash", SEM_JUGADOR + i, 0);
+                s.v(cantJugadores);
+            }
+
             semJugar.v(cantJugadores);
             break;
         }
 
         Log::instance()->append(SEPARATOR, Log::DEBUG);
 
-        semJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que tire su carta
+        semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que tire su carta
     }
-    semJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que termine su ejecucion
+    semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);// habilito al proximo jugador para que termine su ejecucion
 }

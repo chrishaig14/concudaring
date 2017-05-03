@@ -26,7 +26,7 @@ pid_t crearReferi(char* cant_str) {
 int Juego::correr() {
     std::vector<pid_t> pidPlayers(cantJugadores);
     std::vector<SharedStack> cartasJugadores;
-    std::vector<Semaphore> semJugador;
+    std::vector<Semaphore> semTurnoJugador;
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
@@ -37,15 +37,16 @@ int Juego::correr() {
 
     hayGanador.escribir(false);
 
+    Semaphore semAcciones("/bin/bash", SEM_ACCIONES, 0);
+    semAcciones.inicializar();
+
     for (int i = 0; i < cantJugadores; i++) {
         // semáforos para el turno de cada jugador
         // inicializar todos en 0, para que se queden esperando
-        semJugador.push_back(Semaphore("/bin/bash", (char) (SEM_JUGADOR + i), 0));
-        semJugador[i].inicializar();
-        // semáforos para las acciones de cada jugador
-        // inicializados en cantJugadores para que el primer turno no se queden esperando
-        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR_ACCION + i, cantJugadores);
-        sem_jugador.inicializar();
+        semTurnoJugador.push_back(Semaphore("/bin/bash", SEM_TURNO_JUGADOR + i, 0));
+        semTurnoJugador[i].inicializar();
+        Semaphore semJugador("/bin/bash", SEM_JUGADOR + i, cantJugadores);
+        semJugador.inicializar();
     }
 
     char cant_str[32];
@@ -60,7 +61,6 @@ int Juego::correr() {
             execl("tira_cartas", cant_str, num_str, NULL);
         }
     }
-
     s1 << smain.str() << "Empiezo a repartir las cartas";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
@@ -72,26 +72,27 @@ int Juego::correr() {
 
     int primerJugador = rand()%cantJugadores;
 
-    semJugador[primerJugador].v(1); // un jugador random puede jugar
+    semTurnoJugador[primerJugador].v(1); // un jugador random puede jugar
     s1.str("");
     s1 << smain.str() << "Comienza el jugador " << primerJugador;
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     pid_t ref_pid = crearReferi(cant_str);
 
-    for (int i = 0; i < cantJugadores; i++) {
+    for (int i = 0; i < cantJugadores + 1; i++) {// referi + 4*tira_cartas
         int id = wait(NULL);
         std::ostringstream s;
         s << smain.str() << "El proceso hijo " << id << " ha terminado.";
+        //std::cerr << "El proceso hijo " << id << " ha terminado." << std::endl;
         Log::instance()->append(s.str(), Log::DEBUG);
     }
 
-    limpiarSemaforos(semJugador);
+    limpiarSemaforos(semTurnoJugador);
 
     waitpid(ref_pid, NULL, 0);
     s1.clear();
-    s1.str("");
-    s1 << smain .str() << "El referi ha terminado.";
+    s1.str(smain.str());
+    s1 << "El referi ha terminado.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     return 0;
@@ -119,12 +120,12 @@ void Juego::limpiarSemaforos(std::vector<Semaphore> &semJugadores) {
     for (int i = 0; i < cantJugadores; i++) {
         semJugadores[i].eliminar();
     }
-
-    Semaphore semJugar("/bin/bash", SEM_JUGAR, 1);
+    Semaphore semJugar("/bin/bash", SEM_ACCIONES, 1);
     semJugar.eliminar();
-
     for (int i = 0; i < cantJugadores; i++) {
-        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR_ACCION + i, cantJugadores);
-        sem_jugador.eliminar();
+        Semaphore semJugador("/bin/bash", SEM_JUGADOR + i, 1);
+        semJugador.eliminar();
     }
+    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
+    semTurnoTerminado.eliminar();
 }

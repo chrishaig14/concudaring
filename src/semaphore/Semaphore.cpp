@@ -35,6 +35,9 @@ int Semaphore::p(int n) const {
     operacion.sem_op = -n; // restar n al Semaphore
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
+    if (resultado == -1) {
+        perror("Error:");
+    }
     return resultado;
 }
 
@@ -44,13 +47,20 @@ int Semaphore::v(int n) const {
     operacion.sem_op = n; // sumar n al Semaphore
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
+    if (resultado == -1) {
+        perror("Error:");
+    }
     return resultado;
 }
 
 void Semaphore::eliminar() const {
-    semctl(this->semid, 0, IPC_RMID);
+    int result = semctl(this->semid, 0, IPC_RMID);
+    if (result != 0) {
+        perror("Error:");
+    }
 }
 
 Semaphore::~ Semaphore() {
 
 }
+

@@ -7,32 +7,34 @@
 #include "shared_stack/SharedStack.h"
 
 int main(int argc, char *argv[]) {
-    int playerNum = atoi(argv[1]); // numero de jugador
     int cantJugadores = atoi(argv[0]); // numero de jugadores
-    int cartaAnterior = -1;
+    int playerNum = atoi(argv[1]); // numero de jugador
 
-    Semaphore semJugar("/bin/bash", SEM_JUGAR, 0);
+    int cartaAnterior = -1; // numero de la carta de la ronda anterior
 
-    std::vector<Semaphore> semJugadorAccion;
+    Semaphore semAcciones("/bin/bash", SEM_ACCIONES, 0);
+
+    std::vector<Semaphore> semJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        semJugadorAccion.push_back(Semaphore("/bin/bash", SEM_JUGADOR_ACCION + i, 0));
+        semJugador.push_back(Semaphore("/bin/bash", SEM_JUGADOR + i, 0));
     }
 
-    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO, 0);
+    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
 
-    MemoriaCompartida<int> numJugador("/bin/bash", SHM_PLAYER_NUM);
+    MemoriaCompartida<int> numJugador("/bin/bash",
+                                      SHM_PLAYER_NUM); // aca el jugador escribe su numero cuando pone su mano sobre la pila
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
     Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
-    SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS);
+    SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS); // pila de cartas central
 
     std::ostringstream player;
     player << "[" << playerNum << "]:: ";
 
     while (true) {
-        semJugadorAccion[playerNum].p(cantJugadores);
-        semJugar.p(1); // hago lo mio segun la carta
+        semJugador[playerNum].p(cantJugadores);
+        semAcciones.p(1); // hago lo mio segun la carta
         if (hayGanador.leer()){
             return 0; // Si hay un ganador, termino mi ejecucion
         }
@@ -56,7 +58,7 @@ int main(int argc, char *argv[]) {
         Log::instance()->append(s.str(), Log::DEBUG);
         cartaAnterior = tope;
         for (int i = 0; i < cantJugadores; i++) {
-            semJugadorAccion[i].v(1);
+            semJugador[i].v(1);
         }
         semTurnoTerminado.v(1);
     }
