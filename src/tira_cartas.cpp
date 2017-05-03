@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     int playerNum = atoi(argv[1]);
 
     if (fork() == 0) {
-        execv("juega", argv);
+        execv("realiza_accion", argv);
     }
 
     std::vector<Semaphore> semJugador;
