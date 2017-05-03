@@ -24,7 +24,7 @@ pid_t crearReferi(char* cant_str) {
 }
 
 int Juego::correr() {
-    std::vector<pid_t> pidPlayers(cantJugadores);
+
     std::vector<SharedStack> cartasJugadores;
     std::vector<Semaphore> semTurnoJugador;
 
@@ -54,7 +54,6 @@ int Juego::correr() {
 
     for (int i = 0; i < cantJugadores; i++) {
         pid_t pid = fork();
-        pidPlayers[i] = pid;
         if (pid == 0) {
             char num_str[32];
             sprintf(num_str, "%d", i);
