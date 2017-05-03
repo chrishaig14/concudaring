@@ -17,7 +17,6 @@ void Log::append(std::string msg, LOG_TYPE logType) {
     LockFile lock(LOG_PATH);
     std::string fileName(LOG_PATH);
     lock.tomarLock();
-    //std::ofstream out(fileName, std::ios_base::app);
     std::ostringstream out;
 
     if(logType >= loggerLevel) {
@@ -28,7 +27,6 @@ void Log::append(std::string msg, LOG_TYPE logType) {
     if (escrito != out.str().length())
         std::cerr << "Ha ocurrido un error al escribir en el archivo de log." << std::endl;
     
-    //out.close();
     lock.liberarLock();
 }
 

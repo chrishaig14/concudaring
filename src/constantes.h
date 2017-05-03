@@ -16,9 +16,10 @@
 /* File path for shmem */
 #define SHMEM_PATH "/bin/bash"
 
-#define SEM_JUGAR 102
-#define SEM_JUGADOR 103
-#define SEM_TURNO 101
+#define SEM_TURNO 51
+#define SEM_JUGAR 52
+#define SEM_JUGADOR 100
+#define SEM_JUGADOR_ACCION 150
 
 #define SHM_PLAYER_NUM 220
 
@@ -33,4 +34,4 @@
 #define LOG_PATH "log.txt"
 
 /* Separator */
-#define SEPARATOR "************************************************************"
+#define SEPARATOR "****************************************************************"

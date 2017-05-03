@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<Semaphore> semJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        semJugador.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
+        semJugador.push_back(Semaphore("/bin/bash", (char) (SEM_JUGADOR + i), 0));
     }
     Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO, 0);
     Semaphore semJugar("/bin/bash", SEM_JUGAR, 1);

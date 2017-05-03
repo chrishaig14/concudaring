@@ -27,7 +27,6 @@ int Juego::correr() {
     std::vector<pid_t> pidPlayers(cantJugadores);
     std::vector<SharedStack> cartasJugadores;
     std::vector<Semaphore> semJugador;
-    //Semaphore sem_jugar("/bin/bash", SEM_JUGAR, 0);
 
     MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
     MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
@@ -38,14 +37,14 @@ int Juego::correr() {
 
     hayGanador.escribir(false);
 
-    //sem_jugar.inicializar();
-
     for (int i = 0; i < cantJugadores; i++) {
         // semáforos para el turno de cada jugador
         // inicializar todos en 0, para que se queden esperando
-        semJugador.push_back(Semaphore("/bin/bash", (char) (1 + i), 0));
+        semJugador.push_back(Semaphore("/bin/bash", (char) (SEM_JUGADOR + i), 0));
         semJugador[i].inicializar();
-        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR + i, cantJugadores);
+        // semáforos para las acciones de cada jugador
+        // inicializados en cantJugadores para que el primer turno no se queden esperando
+        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR_ACCION + i, cantJugadores);
         sem_jugador.inicializar();
     }
 
@@ -121,12 +120,11 @@ void Juego::limpiarSemaforos(std::vector<Semaphore> &semJugadores) {
         semJugadores[i].eliminar();
     }
 
+    Semaphore semJugar("/bin/bash", SEM_JUGAR, 1);
+    semJugar.eliminar();
+
     for (int i = 0; i < cantJugadores; i++) {
-        Semaphore semJugar("/bin/bash", SEM_JUGAR + i, 1);
-        semJugar.eliminar();
-    }
-    for (int i = 0; i < cantJugadores; i++) {
-        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR + i, cantJugadores);
+        Semaphore sem_jugador("/bin/bash", SEM_JUGADOR_ACCION + i, cantJugadores);
         sem_jugador.eliminar();
     }
 }

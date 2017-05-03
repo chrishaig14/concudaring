@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
             std::ostringstream s;
             size_t cantCartas = cartasJugadores[i].size();
 
-            s << "[R]:: " << "El jugador " << i << " tiene en su mano " << cantCartas << "cartas: ";
+            s << "[R]:: " << "El jugador " << i << " tiene " << cantCartas << " cartas: ";
             Log::instance()->append(s.str() + cartasJugadores[i].show(), Log::DEBUG);
 
         }
