@@ -52,14 +52,9 @@ int Juego::correr() {
     char cant_str[32];
     sprintf(cant_str, "%d", cantJugadores);
 
-    for (int i = 0; i < cantJugadores; i++) {
-        pid_t pid = fork();
-        if (pid == 0) {
-            char num_str[32];
-            sprintf(num_str, "%d", i);
-            execl("tira_cartas", cant_str, num_str, NULL);
-        }
-    }
+    // creo los procesos para los jugadores
+    crear_tira_cartas(cant_str);
+
     s1 << smain.str() << "Empiezo a repartir las cartas";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
@@ -95,6 +90,17 @@ int Juego::correr() {
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     return 0;
+}
+
+void Juego::crear_tira_cartas(const char *cant_str) const {
+    for (int i = 0; i < cantJugadores; i++) {
+        pid_t pid = fork();
+        if (pid == 0) {
+            char num_str[32];
+            sprintf(num_str, "%d", i);
+            execl("tira_cartas", cant_str, num_str, NULL);
+        }
+    }
 }
 
 void Juego::repartirCartas(std::vector<SharedStack> &cartasJugadores) {

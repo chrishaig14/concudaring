@@ -18,6 +18,8 @@ private:
     void repartirCartas(std::vector<SharedStack> &cartasJugadores);
 
     void limpiarSemaforos();
+
+    void crear_tira_cartas(const char *cant_str) const;
 };
 
 
