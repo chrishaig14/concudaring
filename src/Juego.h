@@ -16,7 +16,8 @@ private:
     int cantJugadores;
 
     void repartirCartas(std::vector<SharedStack> &cartasJugadores);
-    void limpiarSemaforos(std::vector<Semaphore> &sem_jugadores);
+
+    void limpiarSemaforos();
 };
 
 

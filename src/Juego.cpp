@@ -87,7 +87,7 @@ int Juego::correr() {
         Log::instance()->append(s.str(), Log::DEBUG);
     }
 
-    limpiarSemaforos(semTurnoJugador);
+    limpiarSemaforos();
 
     waitpid(ref_pid, NULL, 0);
     s1.clear();
@@ -116,9 +116,10 @@ void Juego::repartirCartas(std::vector<SharedStack> &cartasJugadores) {
     }
 }
 
-void Juego::limpiarSemaforos(std::vector<Semaphore> &semJugadores) {
+void Juego::limpiarSemaforos() {
     for (int i = 0; i < cantJugadores; i++) {
-        semJugadores[i].eliminar();
+        Semaphore semTurnoJugador(KEY_PATH, SEM_TURNO_JUGADOR + i, 0);
+        semTurnoJugador.eliminar();
     }
     Semaphore semJugar(KEY_PATH, SEM_ACCIONES, 1);
     semJugar.eliminar();
