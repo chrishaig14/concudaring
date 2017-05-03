@@ -41,15 +41,15 @@ int main(int argc, char *argv[]) {
         std::ostringstream s;
         s << player.str();
         int tope = centralCards.top();
-        if (tope == cartaAnterior || tope == 7) {
+        if (tope == cartaAnterior || tope == CARTA_7) {
             s << "Pongo mano sobre la pila de cartas";
             numJugador.escribir(playerNum + 1);
         } else {
-            if (tope == 10) {
+            if (tope == CARTA_10) {
                 s << "Buenos dias señorita";
-            } else if (tope == 11) {
+            } else if (tope == CARTA_11) {
                 s << "Buenas noche caballero";
-            } else if (tope == 12) {
+            } else if (tope == CARTA_12) {
                 s << "Saludo militar";
             } else {
                 s << "No hago nada";

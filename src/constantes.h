@@ -28,6 +28,11 @@
 #define SHM_WINNER SHM_CARDS - 1
 #define SHM_LOG 77
 
+#define CARTA_7 7
+#define CARTA_10 10
+#define CARTA_11 11
+#define CARTA_12 12
+
 /* Log file name*/
 #define LOG_PATH "log.txt"
 
