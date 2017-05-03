@@ -19,17 +19,17 @@ int main(int argc, char *argv[]) {
 
     std::vector<Semaphore> semTurnoJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        semTurnoJugador.push_back(Semaphore("/bin/bash", SEM_TURNO_JUGADOR + i, 0));
+        semTurnoJugador.push_back(Semaphore(KEY_PATH, SEM_TURNO_JUGADOR + i, 0));
     }
-    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
-    Semaphore semJugar("/bin/bash", SEM_ACCIONES, 0);
+    Semaphore semTurnoTerminado(KEY_PATH, SEM_TURNO_TERMINADO, 0);
+    Semaphore semJugar(KEY_PATH, SEM_ACCIONES, 0);
 
-    SharedStack centralCards(SHMEM_PATH, SHM_CARDS, NUM_CARDS);
-    SharedStack myCards(SHMEM_PATH, SHM_CARDS + 1 + playerNum, NUM_CARDS);
+    SharedStack centralCards(KEY_PATH, SHM_CARDS, NUM_CARDS);
+    SharedStack myCards(KEY_PATH, SHM_CARDS + 1 + playerNum, NUM_CARDS);
 
-    MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
-    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
-    MemoriaCompartida<int> ultimoJugador("/bin/bash", SHM_PLAYER_NUM);
+    MemoriaCompartida<bool> hayGanador(KEY_PATH, SHM_WINNER);
+    MemoriaCompartida<int> logLevel(KEY_PATH, SHM_LOG);
+    MemoriaCompartida<int> ultimoJugador(KEY_PATH, SHM_PLAYER_NUM);
 
     Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
@@ -44,7 +44,6 @@ int main(int argc, char *argv[]) {
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
             semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);
-            //std::cout << "fin tira_cartas " << playerNum << std::endl;
             wait(NULL);
             return(0);
         }
@@ -81,7 +80,7 @@ int main(int argc, char *argv[]) {
             // Ninguno se lleva las cartas
         } else {
             // Le doy las cartas al último que tocó ultimoJugador
-            SharedStack cards_player("/bin/bash", SHM_CARDS + ultimoJugador.leer(), NUM_CARDS);
+            SharedStack cards_player(KEY_PATH, SHM_CARDS + ultimoJugador.leer(), NUM_CARDS);
             s.clear();
             s.str("");
             s << "[-]:: El jugador " << ultimoJugador.leer() - 1 << " se lleva las cartas";
@@ -106,7 +105,7 @@ int main(int argc, char *argv[]) {
             // Destrabo los procesos que realizan acciones para que puedan terminar
 
             for (int i = 0; i < cantJugadores; i++) {
-                Semaphore s("/bin/bash", SEM_JUGADOR + i, 0);
+                Semaphore s(KEY_PATH, SEM_JUGADOR + i, 0);
                 s.v(cantJugadores);
             }
 

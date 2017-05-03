@@ -37,7 +37,6 @@ int Semaphore::p(int n) const {
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
         perror("Error:");
-        //std::cout <<"id: "<< this->semid << "pero da " << semget(clave, 1, 0666 | IPC_CREAT) << std::endl;
     }
     return resultado;
 }
@@ -50,14 +49,12 @@ int Semaphore::v(int n) const {
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
         perror("Error:");
-        //std::cout <<"id: "<< this->semid << "pero da " << semget(clave, 1, 0666 | IPC_CREAT) << std::endl;
     }
     return resultado;
 }
 
 void Semaphore::eliminar() const {
     int result = semctl(this->semid, 0, IPC_RMID);
-    //std::cout << getpid() << " elimina semaforo con id " << semid << " con resultado " << result << std::endl;
     if (result != 0) {
         perror("Error:");
     }

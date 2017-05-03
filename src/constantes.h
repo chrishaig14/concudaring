@@ -13,21 +13,19 @@
 #define PLAYER_WON "Ha ganado el jugador: "
 #define GAME_EXIT_OK "El juego finalizó correctamente."
 
-/* File path for shmem */
-#define SHMEM_PATH "/bin/bash"
+/* File path for shmem & sem. */
+#define KEY_PATH "/bin/bash"
 
 #define SEM_ACCIONES 102
 #define SEM_TURNO_JUGADOR 1
 #define SEM_JUGADOR 103
 #define SEM_TURNO_TERMINADO 101
 
-#define SHM_PLAYER_NUM 220
-
-#define SHM_CARDS 103
 #define NUM_CARDS 48
 
+#define SHM_PLAYER_NUM 220
+#define SHM_CARDS 103
 #define SHM_WINNER SHM_CARDS - 1
-
 #define SHM_LOG 77
 
 /* Log file name*/

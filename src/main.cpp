@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <string.h>
 #include "logger/Log.h"
 #include "constantes.h"
@@ -9,7 +8,7 @@
 
 bool validarParametros(int argc, char **argv) {
 
-    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    MemoriaCompartida<int> logLevel(KEY_PATH, SHM_LOG);
     bool validos = true;
 
     if(argc > 3 || argc < 2) {
@@ -35,7 +34,7 @@ void ayuda() {
 }
 
 int main(int argc, char** argv) {
-    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    MemoriaCompartida<int> logLevel(KEY_PATH, SHM_LOG);
     logLevel.escribir(Log::ERROR);
     Log::instance()->loggerLevel = Log::ERROR;
     Log::instance()->printNewLogger();

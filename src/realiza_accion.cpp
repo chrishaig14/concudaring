@@ -12,22 +12,22 @@ int main(int argc, char *argv[]) {
 
     int cartaAnterior = -1; // numero de la carta de la ronda anterior
 
-    Semaphore semAcciones("/bin/bash", SEM_ACCIONES, 0);
+    Semaphore semAcciones(KEY_PATH, SEM_ACCIONES, 0);
 
     std::vector<Semaphore> semJugador;
     for (int i = 0; i < cantJugadores; i++) {
-        semJugador.push_back(Semaphore("/bin/bash", SEM_JUGADOR + i, 0));
+        semJugador.push_back(Semaphore(KEY_PATH, SEM_JUGADOR + i, 0));
     }
 
-    Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
+    Semaphore semTurnoTerminado(KEY_PATH, SEM_TURNO_TERMINADO, 0);
 
-    MemoriaCompartida<int> numJugador("/bin/bash",
+    MemoriaCompartida<int> numJugador(KEY_PATH,
                                       SHM_PLAYER_NUM); // aca el jugador escribe su numero cuando pone su mano sobre la pila
-    MemoriaCompartida<bool> hayGanador(SHMEM_PATH, SHM_WINNER);
-    MemoriaCompartida<int> logLevel(SHMEM_PATH, SHM_LOG);
+    MemoriaCompartida<bool> hayGanador(KEY_PATH, SHM_WINNER);
+    MemoriaCompartida<int> logLevel(KEY_PATH, SHM_LOG);
     Log::instance()->loggerLevel = logLevel.leer() ? Log::ERROR : Log::DEBUG;
 
-    SharedStack centralCards("/bin/bash", SHM_CARDS, NUM_CARDS); // pila de cartas central
+    SharedStack centralCards(KEY_PATH, SHM_CARDS, NUM_CARDS); // pila de cartas central
 
     std::ostringstream player;
     player << "[" << playerNum << "]:: ";
@@ -36,7 +36,6 @@ int main(int argc, char *argv[]) {
         semJugador[playerNum].p(cantJugadores);
         semAcciones.p(1); // hago lo mio segun la carta
         if (hayGanador.leer()){
-            //std::cout << "fin realiza_accion " << playerNum << std::endl;
             return 0; // Si hay un ganador, termino mi ejecucion
         }
         std::ostringstream s;
