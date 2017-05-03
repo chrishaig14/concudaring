@@ -83,7 +83,6 @@ int Juego::correr() {
 
     limpiarSemaforos();
 
-    waitpid(ref_pid, NULL, 0);
     s1.clear();
     s1.str(smain.str());
     s1 << "El referi ha terminado.";
