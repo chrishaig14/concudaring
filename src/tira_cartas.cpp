@@ -44,7 +44,10 @@ int main(int argc, char *argv[]) {
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
             semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);
-            wait(NULL);
+            int id = wait(NULL);
+            if (id == -1) {
+                perror("Error esperando proceso hijo del jugador:");
+            }
             return(0);
         }
 

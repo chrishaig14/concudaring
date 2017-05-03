@@ -75,6 +75,9 @@ int Juego::correr() {
 
     for (int i = 0; i < cantJugadores + 1; i++) {// referi + 4*tira_cartas
         int id = wait(NULL);
+        if (id == -1) {
+            perror("Error esperando procesos hijos:");
+        }
         std::ostringstream s;
         s << smain.str() << "El proceso hijo " << id << " ha terminado.";
         //std::cerr << "El proceso hijo " << id << " ha terminado." << std::endl;

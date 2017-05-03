@@ -10,6 +10,9 @@ Semaphore::Semaphore(const std::string &nombre, char char_id, const int valorIni
         valorInicial) {
     clave = ftok(nombre.c_str(), char_id);
     this->semid = semget(clave, 1, 0666 | IPC_CREAT);
+    if (this->semid == -1) {
+        perror("Error al obtener semáforo:");
+    }
 }
 
 int Semaphore::id() {
@@ -25,6 +28,9 @@ int Semaphore::inicializar() const {
     semnum init;
     init.val = this->valorInicial;
     int resultado = semctl(this->semid, 0, SETVAL, init);
+    if (resultado == -1) {
+        perror("Error al inicializar semáforo:");
+    }
     return resultado;
 }
 
@@ -36,7 +42,7 @@ int Semaphore::p(int n) const {
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
-        perror("Error:");
+        perror("Error en operación p de semáforo:");
     }
     return resultado;
 }
@@ -48,7 +54,7 @@ int Semaphore::v(int n) const {
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
-        perror("Error:");
+        perror("Error en operación v de semáforo:");
     }
     return resultado;
 }
@@ -56,7 +62,7 @@ int Semaphore::v(int n) const {
 void Semaphore::eliminar() const {
     int result = semctl(this->semid, 0, IPC_RMID);
     if (result != 0) {
-        perror("Error:");
+        perror("Error al eliminar semáforo:");
     }
 }
 
