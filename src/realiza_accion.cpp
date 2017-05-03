@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
         semJugador[playerNum].p(cantJugadores);
         semAcciones.p(1); // hago lo mio segun la carta
         if (hayGanador.leer()){
+            //std::cout << "fin realiza_accion " << playerNum << std::endl;
             return 0; // Si hay un ganador, termino mi ejecucion
         }
         std::ostringstream s;

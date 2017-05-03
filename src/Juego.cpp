@@ -118,14 +118,18 @@ void Juego::repartirCartas(std::vector<SharedStack> &cartasJugadores) {
 
 void Juego::limpiarSemaforos(std::vector<Semaphore> &semJugadores) {
     for (int i = 0; i < cantJugadores; i++) {
+//        std::cout << "elimino sem_jugador "<< i << " "<<semJugadores[i].id() << std::endl;
         semJugadores[i].eliminar();
     }
     Semaphore semJugar("/bin/bash", SEM_ACCIONES, 1);
+//    std::cout << "elimino sem_jugar "<< semJugar.id() << std::endl;
     semJugar.eliminar();
     for (int i = 0; i < cantJugadores; i++) {
         Semaphore semJugador("/bin/bash", SEM_JUGADOR + i, 1);
+//        std::cout << "elimino semJugador "<< i  << " "<< semJugador.id() << std::endl;
         semJugador.eliminar();
     }
     Semaphore semTurnoTerminado("/bin/bash", SEM_TURNO_TERMINADO, 0);
+//    std::cout << "elimino semTurnoTerminado "<<  semTurnoTerminado.id() << std::endl;
     semTurnoTerminado.eliminar();
 }

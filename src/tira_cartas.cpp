@@ -5,6 +5,7 @@
 #include "constantes.h"
 #include "shared_stack/SharedStack.h"
 #include "shmem/MemoriaCompartida.h"
+#include <sys/wait.h>
 
 #define NEXT_PLAYER(playerNum) (playerNum + 1)%cantJugadores
 
@@ -43,6 +44,8 @@ int main(int argc, char *argv[]) {
         if(hayGanador.leer()){
             // Habilito al proximo jugador para que termine su ejecucion
             semTurnoJugador[NEXT_PLAYER(playerNum)].v(1);
+            //std::cout << "fin tira_cartas " << playerNum << std::endl;
+            wait(NULL);
             return(0);
         }
 

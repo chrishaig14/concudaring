@@ -18,6 +18,7 @@ private :
 
     int valorInicial;
 
+    key_t clave;
 public :
 
     Semaphore(const std::string &nombre, char char_id, const int valorInicial);
