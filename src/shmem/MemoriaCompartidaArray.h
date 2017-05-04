@@ -9,6 +9,7 @@
 #include <iostream>
 #include <errno.h>
 #include <unistd.h>
+#include "../logger/Log.h"
 
 template<class T>
 class MemoriaCompartidaArray {
@@ -60,37 +61,21 @@ void MemoriaCompartidaArray<T>::crear(const std::string &archivo, const char let
         if (this->shmId > 0) {
             void *tmpPtr = shmat(this->shmId, NULL, 0);
             if (tmpPtr != (void *) -1) {
-                this->
-                        ptrDatos = static_cast<T *> (tmpPtr);
+                this->ptrDatos = static_cast<T *> (tmpPtr);
             } else {
                 std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-
-//                Log::instance()->
-//
-//                        append(mensaje, getpid(), Log::ERROR
-//                );
-                throw
-                        mensaje;
+                Log::instance()->append(mensaje, Log::ERROR);
+                throw mensaje;
             }
         } else {
             std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
-
-//            Log::instance()->
-//
-//                    append(mensaje, getpid(), Log::ERROR
-//            );
-            throw
-                    mensaje;
+            Log::instance()->append(mensaje, Log::ERROR);
+            throw mensaje;
         }
     } else {
         std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
-
-//        Log::instance()->
-//
-//                append(mensaje, getpid(), Log::ERROR
-//        );
-        throw
-                mensaje;
+        Log::instance()->append(mensaje, Log::ERROR);
+        throw mensaje;
     }
 }
 
@@ -105,7 +90,7 @@ void MemoriaCompartidaArray<T>::liberar() {
         }
     } else {
         std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
-//        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -124,17 +109,17 @@ MemoriaCompartidaArray<T>::MemoriaCompartidaArray(const std::string &archivo, co
                 this->ptrDatos = static_cast<T *> (tmpPtr);
             } else {
                 std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-//                Log::instance()->append(mensaje, getpid(), Log::ERROR);
+                Log::instance()->append(mensaje, Log::ERROR);
                 throw mensaje;
             }
         } else {
             std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
-//            Log::instance()->append(mensaje, getpid(), Log::ERROR);
+            Log::instance()->append(mensaje, Log::ERROR);
             throw mensaje;
         }
     } else {
         std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
-//        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -147,7 +132,7 @@ MemoriaCompartidaArray<T>::MemoriaCompartidaArray(const MemoriaCompartidaArray &
         this->ptrDatos = static_cast<T *> (tmpPtr);
     } else {
         std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-//        Log::instance()->append(mensaje, getpid(), Log::ERROR);
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 }
@@ -163,8 +148,8 @@ MemoriaCompartidaArray<T>::~MemoriaCompartidaArray() {
         }
     } else {
         std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
-//        Log::instance()->append(mensaje, getpid(), Log::ERROR);
-        std::cerr << mensaje << std::endl;
+        Log::instance()->append(mensaje, Log::ERROR);
+        throw mensaje;
     }
 }
 
@@ -177,6 +162,7 @@ MemoriaCompartidaArray<T> &MemoriaCompartidaArray<T>::operator=(const MemoriaCom
         this->ptrDatos = static_cast<T *> (tmpPtr);
     } else {
         std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
+        Log::instance()->append(mensaje, Log::ERROR);
         throw mensaje;
     }
 

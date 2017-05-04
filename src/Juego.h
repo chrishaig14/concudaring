@@ -19,7 +19,9 @@ private:
 
     void limpiarSemaforos();
 
-    void crear_tira_cartas(const char *cant_str) const;
+    void esperarHijos();
+
+    void crearTiraCartas(const char *cant_str) const;
 };
 
 

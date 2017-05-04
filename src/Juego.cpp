@@ -53,7 +53,7 @@ int Juego::correr() {
     sprintf(cant_str, "%d", cantJugadores);
 
     // creo los procesos para los jugadores
-    crear_tira_cartas(cant_str);
+    crearTiraCartas(cant_str);
 
     s1 << smain.str() << "Empiezo a repartir las cartas";
     Log::instance()->append(s1.str(), Log::DEBUG);
@@ -73,28 +73,19 @@ int Juego::correr() {
 
     pid_t ref_pid = crearReferi(cant_str);
 
-    for (int i = 0; i < cantJugadores + 1; i++) {// referi + 4*tira_cartas
-        int id = wait(NULL);
-        if (id == -1) {
-            perror("Error esperando procesos hijos:");
-        }
-        std::ostringstream s;
-        s << smain.str() << "El proceso hijo " << id << " ha terminado.";
-        //std::cerr << "El proceso hijo " << id << " ha terminado." << std::endl;
-        Log::instance()->append(s.str(), Log::DEBUG);
-    }
+    esperarHijos();
 
     limpiarSemaforos();
 
     s1.clear();
-    s1.str(smain.str());
-    s1 << "El referi ha terminado.";
+    s1.str("");
+    s1 << smain.str() << "El referi ha terminado.";
     Log::instance()->append(s1.str(), Log::DEBUG);
 
     return 0;
 }
 
-void Juego::crear_tira_cartas(const char *cant_str) const {
+void Juego::crearTiraCartas(const char *cant_str) const {
     for (int i = 0; i < cantJugadores; i++) {
         pid_t pid = fork();
         if (pid == 0) {
@@ -102,6 +93,23 @@ void Juego::crear_tira_cartas(const char *cant_str) const {
             sprintf(num_str, "%d", i);
             execl("tira_cartas", cant_str, num_str, NULL);
         }
+    }
+}
+
+void Juego::esperarHijos() {
+    std::ostringstream smain;
+    smain << "[-]:: ";
+    for (int i = 0; i < cantJugadores + 1; i++) {// referi + 4*tira_cartas
+        int id = wait(NULL);
+        if (id == -1) {
+            std::ostringstream serror;
+            serror << "Error esperando procesos hijos:";
+            Log::instance()->append(serror.str(), Log::ERROR);
+            perror(serror.str().c_str());
+        }
+        std::ostringstream s;
+        s << smain.str() << "El proceso hijo " << id << " ha terminado.";
+        Log::instance()->append(s.str(), Log::DEBUG);
     }
 }
 

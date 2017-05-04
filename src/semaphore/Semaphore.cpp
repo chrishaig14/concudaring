@@ -1,9 +1,7 @@
-//
-// Created by chris on 08/04/17.
-//
-
 #include <iostream>
+#include <sstream>
 #include "Semaphore.h"
+#include "../logger/Log.h"
 
 Semaphore::Semaphore(const std::string &nombre, char char_id, const int valorInicial) : valorInicial(
 
@@ -11,7 +9,10 @@ Semaphore::Semaphore(const std::string &nombre, char char_id, const int valorIni
     clave = ftok(nombre.c_str(), char_id);
     this->semid = semget(clave, 1, 0666 | IPC_CREAT);
     if (this->semid == -1) {
-        perror("Error al obtener semáforo:");
+        std::ostringstream serror;
+        serror << "Error al obtener semáforo:";
+        Log::instance()->append(serror.str(), Log::ERROR);
+        perror(serror.str().c_str());
     }
 }
 
@@ -29,7 +30,10 @@ int Semaphore::inicializar() const {
     init.val = this->valorInicial;
     int resultado = semctl(this->semid, 0, SETVAL, init);
     if (resultado == -1) {
-        perror("Error al inicializar semáforo:");
+        std::ostringstream serror;
+        serror << "Error al inicializar semáforo:";
+        Log::instance()->append(serror.str(), Log::ERROR);
+        perror(serror.str().c_str());
     }
     return resultado;
 }
@@ -42,7 +46,10 @@ int Semaphore::p(int n) const {
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
-        perror("Error en operación p de semáforo:");
+        std::ostringstream serror;
+        serror << "Error en operación p de semáforo:";
+        Log::instance()->append(serror.str(), Log::ERROR);
+        perror(serror.str().c_str());
     }
     return resultado;
 }
@@ -54,7 +61,10 @@ int Semaphore::v(int n) const {
     operacion.sem_flg = 0; //sem_undo
     int resultado = semop(this->semid, &operacion, 1);
     if (resultado == -1) {
-        perror("Error en operación v de semáforo:");
+        std::ostringstream serror;
+        serror << "Error en operación v de semáforo:";
+        Log::instance()->append(serror.str(), Log::ERROR);
+        perror(serror.str().c_str());
     }
     return resultado;
 }
@@ -62,7 +72,10 @@ int Semaphore::v(int n) const {
 void Semaphore::eliminar() const {
     int result = semctl(this->semid, 0, IPC_RMID);
     if (result != 0) {
-        perror("Error al eliminar semáforo:");
+        std::ostringstream serror;
+        serror << "Error al eliminar semáforo:";
+        Log::instance()->append(serror.str(), Log::ERROR);
+        perror(serror.str().c_str());
     }
 }
 
