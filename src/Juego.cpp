@@ -45,8 +45,8 @@ int Juego::correr() {
         // inicializar todos en 0, para que se queden esperando
         semTurnoJugador.push_back(Semaphore(KEY_PATH, SEM_TURNO_JUGADOR + i, 0));
         semTurnoJugador[i].inicializar();
-        Semaphore semJugador(KEY_PATH, SEM_JUGADOR + i, cantJugadores);
-        semJugador.inicializar();
+        Semaphore semJugadorAccion(KEY_PATH, SEM_JUGADOR_ACCION + i, cantJugadores);
+        semJugadorAccion.inicializar();
     }
 
     char cant_str[32];
@@ -131,8 +131,8 @@ void Juego::limpiarSemaforos() {
     Semaphore semJugar(KEY_PATH, SEM_ACCIONES, 1);
     semJugar.eliminar();
     for (int i = 0; i < cantJugadores; i++) {
-        Semaphore semJugador(KEY_PATH, SEM_JUGADOR + i, 1);
-        semJugador.eliminar();
+        Semaphore semJugadorAccion(KEY_PATH, SEM_JUGADOR_ACCION + i, 1);
+        semJugadorAccion.eliminar();
     }
     Semaphore semTurnoTerminado(KEY_PATH, SEM_TURNO_TERMINADO, 0);
     semTurnoTerminado.eliminar();

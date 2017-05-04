@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
             // Destrabo los procesos que realizan acciones para que puedan terminar
 
             for (int i = 0; i < cantJugadores; i++) {
-                Semaphore s(KEY_PATH, SEM_JUGADOR + i, 0);
+                Semaphore s(KEY_PATH, SEM_JUGADOR_ACCION + i, 0);
                 s.v(cantJugadores);
             }
 
