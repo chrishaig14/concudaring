@@ -1,4 +1,3 @@
-
 /* Help message */
 # define HELP "El juego sólo acepta dos parametros: nro de jugadores (debe ser par) y opcionalmente 'd' como segundo argumento para ejecutar en modo INFO."
 
@@ -10,11 +9,12 @@
 /* INFO messages */
 #define DEBUG_MODE "Se ejecutó el programa en modo DEBUG."
 #define STARTING_WITH "Se dará comienzo al juego con jugadores: "
-#define PLAYER_WON "Ha ganado el jugador: "
 #define GAME_EXIT_OK "El juego finalizó correctamente."
 
 /* File path for shmem & sem. */
 #define KEY_PATH "/bin/bash"
+
+#define REF_WAIT_TIME 5000
 
 #define SEM_ACCIONES 102
 #define SEM_TURNO_JUGADOR 1

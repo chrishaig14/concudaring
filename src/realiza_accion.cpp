@@ -58,6 +58,11 @@ int main(int argc, char *argv[]) {
         Log::instance()->append(s.str(), Log::DEBUG);
         cartaAnterior = tope;
         for (int i = 0; i < cantJugadores; i++) {
+            if (i != playerNum) {
+                std::ostringstream s;
+                s << "[" << playerNum << "]:: " << "Le aviso al jugador " << i << " que ya hice mi acción";
+                Log::instance()->append(s.str(), Log::DEBUG);
+            }
             semJugadorAccion[i].v(1);
         }
         semTurnoTerminado.v(1);

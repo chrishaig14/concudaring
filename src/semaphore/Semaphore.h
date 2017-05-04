@@ -1,7 +1,3 @@
-//
-// Created by chris on 08/04/17.
-//
-
 #ifndef CONCUDARING_SEMAPHORE_H
 #define CONCUDARING_SEMAPHORE_H
 
